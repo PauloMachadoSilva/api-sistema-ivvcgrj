@@ -30,8 +30,9 @@ router.get("/:cpf", async (req, res) => {
   let collection = await db.collection("usuarios");
   let query = {cpf: String(req.params.cpf)};
   let result = await collection.findOne(query);
+  let error = {}
 
-  if (!result) res.send("Not found").status(404);
+  if (!result) res.send(error).status(404);
   else res.send(result).status(200);
 });
 
