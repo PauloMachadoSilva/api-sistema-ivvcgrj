@@ -28,7 +28,7 @@ router.get("/latest", async (req, res) => {
 // Get a single post
 router.get("/:cpf", async (req, res) => {
   let collection = await db.collection("usuarios");
-  let query = {cpf: Int32(req.params.cpf)};
+  let query = {cpf: String(req.params.cpf)};
   let result = await collection.findOne(query);
 
   if (!result) res.send("Not found").status(404);
