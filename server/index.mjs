@@ -5,6 +5,8 @@ import "express-async-errors";
 import usuarios from "./routes/usuarios.mjs";
 import departamentos from "./routes/departamentos.mjs";
 import departamentosFuncoes from "./routes/departamentos-funcoes.mjs";
+import discipulados from "./routes/discipulados.mjs";
+import rhema from "./routes/rhema.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -18,6 +20,10 @@ app.use("/usuarios", usuarios);
 app.use("/departamentos", departamentos);
 // Departamentos
 app.use("/departamentos-funcoes", departamentosFuncoes);
+// Discipulados
+app.use("/discipulados", discipulados);
+// Rhema
+app.use("/rhema", rhema);
 
 // Global error handling
 app.use((err, _req, res, next) => {
