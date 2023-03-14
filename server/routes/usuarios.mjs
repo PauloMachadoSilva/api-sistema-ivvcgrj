@@ -1,6 +1,6 @@
 import express from "express";
 import db from "../db/conn.mjs";
-import { ObjectId } from "mongodb";
+import { Int32, ObjectId } from "mongodb";
 
 const router = express.Router();
 
@@ -26,9 +26,9 @@ router.get("/latest", async (req, res) => {
 });
 
 // Get a single post
-router.get("/:id", async (req, res) => {
+router.get("/:cpf", async (req, res) => {
   let collection = await db.collection("usuarios");
-  let query = {_id: ObjectId(req.params.id)};
+  let query = {cpf: Int32(req.params.cpf)};
   let result = await collection.findOne(query);
 
   if (!result) res.send("Not found").status(404);
