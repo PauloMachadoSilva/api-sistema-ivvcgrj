@@ -36,13 +36,24 @@ router.get("/:cpf", async (req, res) => {
   else res.send(result).status(200);
 });
 
-// Add a new document to the collection
+// Adicionando usuários
 router.post("/", async (req, res) => {
   let collection = await db.collection("usuarios");
   let newDocument = req.body;
   newDocument.date = new Date();
   let result = await collection.insertOne(newDocument);
   res.send(result).status(204);
+});
+
+// Login
+router.post("/login", async (req, res) => {
+  let collection = await db.collection("usuarios");
+  let params = req.body;
+  let query = {email: String(params.email), senha: String(params.senha)};
+  let result = await collection.findOne(query);
+  let error = {}
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
 });
 
 // Update the post with a new comment
