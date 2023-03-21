@@ -41,6 +41,7 @@ router.post("/", async (req, res) => {
   let collection = await db.collection("usuarios");
   let newDocument = req.body;
   newDocument.date = new Date();
+  newDocument.senha = btoa(newDocument.senha);
   let result = await collection.insertOne(newDocument);
   res.send(result).status(204);
 });
