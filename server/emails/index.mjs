@@ -1,9 +1,9 @@
 
 import nodemailer from 'nodemailer';
 import {SMTP_CONFIG} from "./config/smtp.mjs";
-
+import htmlTemplates from "./templates/templates.mjs";
   
-export default async function enviarEmail (emailUser) {
+export default async function enviarEmail (emailUsario) {
 
 const transporter = nodemailer.createTransport({
     host: SMTP_CONFIG.host,
@@ -17,15 +17,13 @@ const transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     }
   });
-  //  send mail with defined transport object
+  //  Caebeçalho do email
   const enviarEmail = await transporter.sendMail({
-    from: SMTP_CONFIG.email, // sender address
-    to: emailUser.email, // list of receivers
-    subject: emailUser.subject, // Subject line
-    text: emailUser.texto, // plain text body
-    html: "<b>Hello world?</b>", // html body
+    from: SMTP_CONFIG.email, // Rementente
+    to: emailUsario.email, // Destinatario
+    subject: emailUsario.subject, // Assunto
+    text: emailUsario.texto, // Texto
+    html: htmlTemplates(emailUsario), // html/template
   });
-  
   console.log(enviarEmail);
-
 };  

@@ -9,8 +9,9 @@ const router = express.Router();
 router.post("/", async (req, res) => {
     let newDocument = req.body;
     newDocument.from = new String('pauloems@yahoo.com.br');
-    email(newDocument)
-    res.send('oi').status(200);
+    let send = email(newDocument);
+    if (!send) res.send(error).status(404);
+    else res.send(send).status(200);
   });
   
 

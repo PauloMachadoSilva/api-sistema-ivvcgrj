@@ -56,6 +56,27 @@ router.post("/login", async (req, res) => {
   else res.send(result).status(200);
 });
 
+router.post("/alterar-senha/:email", async (req, res) => {
+  const query = { email: String(req.params.email) };
+  const updates = {
+    $set: { senha: req.body.senha }
+  };
+
+  let collection = await db.collection("usuarios");
+  let result = await collection.updateOne(query, updates);
+
+  res.send(result).status(200);
+});
+
+router.post("/recuperar-senha/:email", async (req, res) => {
+  let collection = await db.collection("usuarios");
+  let query = {email: String(req.params.email)};
+  let result = await collection.findOne(query);
+  let error = {}
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+});
+
 // Update the post with a new comment
 router.patch("/comment/:id", async (req, res) => {
   const query = { _id: ObjectId(req.params.id) };
