@@ -68,6 +68,29 @@ router.post("/alterar-senha/:email", async (req, res) => {
   res.send(result).status(200);
 });
 
+router.post("/alterar-cadastro/:cpf", async (req, res) => {
+  const query = { cpf: String(req.params.cpf) };
+  const updates = {
+    $set: { 
+      nome: req.body.nome, 
+      aprovado: req.body.aprovado, 
+      nascimento: req.body.nascimento, 
+      cpf: req.body.cpf, 
+      email: req.body.email, 
+      telefone: req.body.telefone, 
+      departamentos: req.body.departamentos, 
+      discipulado: req.body.discipulado, 
+      data: req.body.data,
+      nascimento: req.body.nascimento,  
+    }
+  };
+
+  let collection = await db.collection("usuarios");
+  let result = await collection.updateOne(query, updates);
+
+  res.send(result).status(200);
+});
+
 router.post("/recuperar-senha/:email", async (req, res) => {
   let collection = await db.collection("usuarios");
   let query = {email: String(req.params.email)};
