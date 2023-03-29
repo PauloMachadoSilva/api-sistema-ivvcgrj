@@ -79,6 +79,7 @@ router.post("/alterar-cadastro/:cpf", async (req, res) => {
       email: req.body.email, 
       telefone: req.body.telefone, 
       departamentos: req.body.departamentos, 
+      endereco: req.body.endereco, 
       discipulado: req.body.discipulado, 
       data: req.body.data,
       nascimento: req.body.nascimento,  
