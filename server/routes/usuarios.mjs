@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   let collection = await db.collection("usuarios");
   let results = await collection.find({})
-    .limit(50)
+    // .limit(50)
     .toArray();
 
   res.send(results).status(200);
@@ -51,6 +51,8 @@ router.post("/login", async (req, res) => {
   let params = req.body;
   let query = {email: String(params.email), senha: String(params.senha)};
   let result = await collection.findOne(query);
+  if (result.aprovado == false)
+    result = {};
   let error = {}
   if (!result) res.send(error).status(404);
   else res.send(result).status(200);
@@ -82,7 +84,9 @@ router.post("/alterar-cadastro/:cpf", async (req, res) => {
       endereco: req.body.endereco, 
       discipulado: req.body.discipulado, 
       data: req.body.data,
-      nascimento: req.body.nascimento,  
+      nascimento: req.body.nascimento,
+      rhema : req.body.rhema,  
+      whatsapp: req.body.whatsapp,  
     }
   };
 

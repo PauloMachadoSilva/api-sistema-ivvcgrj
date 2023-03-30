@@ -8,6 +8,7 @@ import departamentosFuncoes from "./routes/departamentos-funcoes.mjs";
 import discipulados from "./routes/discipulados.mjs";
 import rhema from "./routes/rhema.mjs";
 import email from "./routes/email.mjs";
+import visitantes from "./routes/visitantes.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -17,6 +18,8 @@ app.use(express.json());
 
 // Usuários
 app.use("/usuarios", usuarios);
+// Usuários
+app.use("/visitantes", visitantes);
 // Departamentos
 app.use("/departamentos", departamentos);
 // Departamentos
