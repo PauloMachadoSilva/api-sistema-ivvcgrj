@@ -76,7 +76,6 @@ router.post("/alterar-cadastro/:cpf", async (req, res) => {
     $set: { 
       nome: req.body.nome, 
       aprovado: req.body.aprovado, 
-      nascimento: req.body.nascimento, 
       cpf: req.body.cpf, 
       email: req.body.email, 
       telefone: req.body.telefone, 

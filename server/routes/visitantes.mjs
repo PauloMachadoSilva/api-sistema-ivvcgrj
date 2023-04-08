@@ -23,5 +23,26 @@ router.post("/", async (req, res) => {
   });
 
 
+  router.post("/alterar-visitante/:telefone", async (req, res) => {
+    const query = { telefone: String(req.params.telefone) };
+    const updates = {
+      $set: { 
+        nome: req.body.nome, 
+        telefone: req.body.telefone, 
+        data: req.body.data, 
+        convidado_por: req.body.convidado_por, 
+        como_conheceu: req.body.como_conheceu, 
+        departamentos: req.body.departamentos, 
+        usuario: req.body.usuario, 
+      }
+    };
+  
+    let collection = await db.collection("visitantes");
+    let result = await collection.updateOne(query, updates);
+  
+    res.send(result).status(200);
+  });
+
+
 
 export default router;
