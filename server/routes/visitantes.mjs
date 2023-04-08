@@ -23,8 +23,8 @@ router.post("/", async (req, res) => {
   });
 
 
-  router.post("/alterar-visitante/:telefone", async (req, res) => {
-    const query = { telefone: String(req.params.telefone) };
+  router.post("/alterar-visitante/:_id", async (req, res) => {
+    const query = { _id: ObjectId(req.params._id) };
     const updates = {
       $set: { 
         nome: req.body.nome, 
