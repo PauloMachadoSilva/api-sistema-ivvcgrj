@@ -51,7 +51,7 @@ router.post("/login", async (req, res) => {
   let params = req.body;
   let query = {email: String(params.email), senha: String(params.senha)};
   let result = await collection.findOne(query);
-  if (result.aprovado == false)
+  if (result.aprovado === 'Não')
     result = {};
   let error = {}
   if (!result) res.send(error).status(404);
