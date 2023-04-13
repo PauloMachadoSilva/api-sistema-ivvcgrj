@@ -1,6 +1,10 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import { Int32, ObjectId } from "mongodb";
+import logsFunction from '../logs/logs-functions.mjs'
+import logsLoginFunction from '../logs/logs.login-functions.mjs'
+
+
 
 const router = express.Router();
 
@@ -56,6 +60,14 @@ router.post("/login", async (req, res) => {
   let error = {}
   if (!result) res.send(error).status(404);
   else res.send(result).status(200);
+
+  //logs
+  let log = result;
+  log.acao = 'login';
+  log.nome_collection = 'usuario';
+  log.metodo = 'post';
+  log.tipo = 0 // 0: Não gera notificação 1: Gera notificação 
+  let log_result = await logsLoginFunction(log)
 });
 
 router.post("/alterar-senha/:email", async (req, res) => {
