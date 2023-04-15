@@ -55,19 +55,21 @@ router.post("/login", async (req, res) => {
   let params = req.body;
   let query = {email: String(params.email), senha: String(params.senha)};
   let result = await collection.findOne(query);
-  if (result.aprovado === 'Não')
+  if (result?.aprovado === 'Não')
     result = {};
   let error = {}
   if (!result) res.send(error).status(404);
   else res.send(result).status(200);
-
+ 
   //logs
+  if (result != null) {
   let log = result;
   log.acao = 'login';
   log.nome_collection = 'usuario';
   log.metodo = 'post';
   log.tipo = 0 // 0: Não gera notificação 1: Gera notificação 
   let log_result = await logsLoginFunction(log)
+  }
 });
 
 router.post("/alterar-senha/:email", async (req, res) => {
