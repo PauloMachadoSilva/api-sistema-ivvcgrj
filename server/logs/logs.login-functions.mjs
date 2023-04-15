@@ -3,7 +3,7 @@ import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
 
 export default async function logsFunction(params) {
-  console.log(params);
+//   console.log(params);
   let collection = await db.collection("logs");
   let newDocument = tratarParams(params);
   let result = await collection.insertOne(newDocument);
