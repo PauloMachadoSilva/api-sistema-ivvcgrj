@@ -3,6 +3,7 @@ import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
 
 export default async function logsFunction(params) {
+  // console.log(params)
   let collection = await db.collection("logs");
   let newDocument = tratarParams(params);
   let result = await collection.insertOne(newDocument);
@@ -27,7 +28,7 @@ const param = {
   campos_antigos: params.campos_antigos ? params.campos_antigos : undefined,
   campos_atualizados: params.campos_atualizados ? params.campos_atualizados : undefined 
 };
-// console.log(param)
+//console.log(param)
 return param;
 
 function tratarData() {

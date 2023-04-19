@@ -47,6 +47,13 @@ router.post("/", async (req, res) => {
   newDocument.date = new Date();
   let result = await collection.insertOne(newDocument);
   res.send(result).status(204);
+
+  let log = newDocument;
+  log.acao = 'cadastro-usuario';
+  log.nome_collection = 'usuario';
+  log.metodo = 'post';
+  log.tipo = 1 // 0: Não gera notificação 1: Gera notificação 
+  let log_result = await logsFunction(log)
 });
 
 // Login
@@ -107,6 +114,14 @@ router.post("/alterar-cadastro/:cpf", async (req, res) => {
   let result = await collection.updateOne(query, updates);
 
   res.send(result).status(200);
+
+  //logs
+  let log = req.body;
+  log.acao = 'atualizar-cadastro';
+  log.nome_collection = 'usuario';
+  log.metodo = 'post';
+  log.tipo = 0 // 0: Não gera notificação 1: Gera notificação 
+  let log_result = await logsFunction(log)
 });
 
 router.post("/recuperar-senha/:email", async (req, res) => {
