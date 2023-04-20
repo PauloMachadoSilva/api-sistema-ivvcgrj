@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 
 const router = express.Router();
 
-// Get a list of 50 posts
+// Consultar Rhema
 router.get("/", async (req, res) => {
   let collection = await db.collection("rhema");
   let results = await collection.find({})

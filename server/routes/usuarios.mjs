@@ -8,7 +8,7 @@ import logsLoginFunction from '../logs/logs.login-functions.mjs'
 
 const router = express.Router();
 
-// Get a list of 50 posts
+//Consultar todos os usuários
 router.get("/", async (req, res) => {
   let collection = await db.collection("usuarios");
   let results = await collection.find({})
@@ -29,7 +29,7 @@ router.get("/latest", async (req, res) => {
   res.send(results).status(200);
 });
 
-// Get a single post
+//Validar CPF
 router.get("/:cpf", async (req, res) => {
   let collection = await db.collection("usuarios");
   let query = {cpf: String(req.params.cpf)};
@@ -79,6 +79,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//Alterar senha
 router.post("/alterar-senha/:email", async (req, res) => {
   const query = { email: String(req.params.email) };
   const updates = {
@@ -89,8 +90,18 @@ router.post("/alterar-senha/:email", async (req, res) => {
   let result = await collection.updateOne(query, updates);
 
   res.send(result).status(200);
+
+   //logs
+   let log = {};
+   log.nome = req.body.email;
+   log.acao = 'alterar-senha';
+   log.nome_collection = 'usuario';
+   log.metodo = 'post';
+   log.tipo = 0 // 0: Não gera notificação 1: Gera notificação 
+  let log_result = await logsLoginFunction(log)
 });
 
+//Alterar cadastro
 router.post("/alterar-cadastro/:cpf", async (req, res) => {
   const query = { cpf: String(req.params.cpf) };
   const updates = {
@@ -124,6 +135,7 @@ router.post("/alterar-cadastro/:cpf", async (req, res) => {
   let log_result = await logsFunction(log)
 });
 
+//Recuperar Senha
 router.post("/recuperar-senha/:email", async (req, res) => {
   let collection = await db.collection("usuarios");
   let query = {email: String(req.params.email)};
@@ -131,29 +143,25 @@ router.post("/recuperar-senha/:email", async (req, res) => {
   let error = {}
   if (!result) res.send(error).status(404);
   else res.send(result).status(200);
+
+   //logs
+   let log = result;
+   log.acao = 'recuperar-senha';
+   log.nome_collection = 'usuario';
+   log.metodo = 'post';
+   log.tipo = 0 // 0: Não gera notificação 1: Gera notificação 
+   let log_result = await logsLoginFunction(log)
 });
 
-// Update the post with a new comment
-router.patch("/comment/:id", async (req, res) => {
-  const query = { _id: ObjectId(req.params.id) };
-  const updates = {
-    $push: { comments: req.body }
-  };
 
-  let collection = await db.collection("usuarios");
-  let result = await collection.updateOne(query, updates);
-
-  res.send(result).status(200);
-});
-
-// Delete an entry
+// Não Implementado
 router.delete("/:id", async (req, res) => {
-  const query = { _id: ObjectId(req.params.id) };
+  // const query = { _id: ObjectId(req.params.id) };
 
-  const collection = db.collection("usuarios");
-  let result = await collection.deleteOne(query);
+  // const collection = db.collection("usuarios");
+  // let result = await collection.deleteOne(query);
 
-  res.send(result).status(200);
+  // res.send(result).status(200);
 });
 
 export default router;
