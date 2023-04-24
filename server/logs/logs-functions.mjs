@@ -7,6 +7,18 @@ export default async function logsFunction(params) {
   let collection = await db.collection("logs");
   let newDocument = tratarParams(params);
   let result = await collection.insertOne(newDocument);
+  if (newDocument.tipo === 1) {
+    let collectionNotificacao = await db.collection("notificacoes");
+    const notificacao = {
+      data: newDocument.data,
+      status: 0,
+      acao: newDocument.collection_acao,
+      cpf: newDocument.campos_atualizados[1].valor, // Pegando CPF
+      nome: newDocument.campos_atualizados[0].valor, // Pegando CPF
+    }
+    console.log(notificacao);
+    let resultNotificacao = await collectionNotificacao.insertOne(notificacao);
+  }
   return result;
 }
 
@@ -37,43 +49,5 @@ function tratarData() {
   dataAjustada.setHours(h);
   return dataAjustada
 }
-
-  // switch(params.metodo) {
-  //   case 'post':
-  //     param = {
-  //       data: new Date(),
-  //       metodo: params.metodo,
-  //       tipo: params.tipo,
-  //       usuario: {
-  //         id: params.usuario.id,
-  //         nome: params.usuario.nome,
-  //       },
-  //       collection: {
-  //         nome: params.nome_collection,
-  //         acao: params.acao,
-  //       },
-  //       campos_antigos: params.campos_antigos,
-  //       campos_atualizados: params.campos_atualizados
-  //     };
-  //     break;
-  //   case 'update':
-  //     param = {
-  //       data: new Date(),
-  //       metodo: params.metodo,
-  //       tipo: params.tipo,
-  //       usuario: {
-  //         id: params.usuario.id,
-  //         nome: params.usuario.nome,
-  //       },
-  //       collection: {
-  //         nome: params.nome_collection,
-  //         acao: params.acao,
-  //       },
-  //       campos_antigos: params.campos_antigos,
-  //       campos_atualizados: params.campos_atualizados
-  //     };
-  //     break;
-  //   default:
-  // }
   
 }

@@ -9,6 +9,7 @@ import discipulados from "./routes/discipulados.mjs";
 import rhema from "./routes/rhema.mjs";
 import email from "./routes/email.mjs";
 import visitantes from "./routes/visitantes.mjs";
+import calendarioEventos from "./routes/calendarios-eventos.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -28,6 +29,8 @@ app.use("/departamentos-funcoes", departamentosFuncoes);
 app.use("/discipulados", discipulados);
 // Rhema
 app.use("/rhema", rhema);
+// Calendarios Eventos
+app.use("/calendarios-eventos", calendarioEventos );
 
 
 //Email
