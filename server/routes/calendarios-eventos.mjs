@@ -21,14 +21,14 @@ router.post("/", async (req, res) => {
   res.send(result).status(200);
 
   //logs
-  let log = req.body;
-  log.acao = "cadastro-eventos";
-  log.nome_collection = "calendarios-eventos";
-  log.id_collection = result.insertedId;
-  log.metodo = "post";
-  log.tipo = 0; // 0: Não gera notificação 1: Gera notificação
-  newDocument.date = new Date();
-  let log_result = await logsFunction(log);
+  // let log = req.body;
+  // log.acao = "cadastro-eventos";
+  // log.nome_collection = "calendarios-eventos";
+  // log.id_collection = result.insertedId;
+  // log.metodo = "post";
+  // log.tipo = 0; // 0: Não gera notificação 1: Gera notificação
+  // newDocument.date = new Date();
+  // let log_result = await logsFunction(log);
 });
 
 

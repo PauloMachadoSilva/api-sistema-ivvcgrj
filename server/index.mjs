@@ -10,6 +10,7 @@ import rhema from "./routes/rhema.mjs";
 import email from "./routes/email.mjs";
 import visitantes from "./routes/visitantes.mjs";
 import calendarioEventos from "./routes/calendarios-eventos.mjs";
+import eventos from "./routes/eventos.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -29,6 +30,8 @@ app.use("/departamentos-funcoes", departamentosFuncoes);
 app.use("/discipulados", discipulados);
 // Rhema
 app.use("/rhema", rhema);
+// Eventos
+app.use("/eventos", eventos );
 // Calendarios Eventos
 app.use("/calendarios-eventos", calendarioEventos );
 
