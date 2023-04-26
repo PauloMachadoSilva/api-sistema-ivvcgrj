@@ -6,9 +6,24 @@ const router = express.Router();
 
 // Consultar departamentos funções
 router.get("/", async (req, res) => {
+
   let collection = await db.collection("calendarios-eventos");
-  let results = await collection.find({})
+  let results = await collection.aggregate([
+    { "$addFields": { "id": { "$toObjectId": "$id_evento" }}},
+    {
+      $lookup: {
+        from: 'eventos',
+        localField: 'id',
+        foreignField:'_id',
+        as: 'JOIN'
+      }
+    }
+  ])
     .toArray();
+  
+  // let collection = await db.collection("calendarios-eventos");
+  // let results = await collection.find({})
+  //   .toArray();
 
   res.send(results).status(200);
 });

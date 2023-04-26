@@ -35,10 +35,12 @@ router.post("/", async (req, res) => {
 
 router.post("/alterar-evento/:_id", async (req, res) => {
   const query = { _id: ObjectId(req.params._id) };
+  // console.log(query);
   const updates = {
     $set: {
       descricao: req.body.descricao,
       local: req.body.local,
+      hora: req.body.hora,
       observacao: req.body.observacao,
       tipo: req.body.tipo,
       confirmado: req.body.confirmado,
