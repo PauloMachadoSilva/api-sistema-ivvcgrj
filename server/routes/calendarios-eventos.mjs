@@ -31,6 +31,14 @@ router.post("/", async (req, res) => {
   // let log_result = await logsFunction(log);
 });
 
+// Não Implementado
+router.delete("/:id", async (req, res) => {
+  const query = { _id: ObjectId(req.params.id) };
+  //console.log(query);
+  const collection = db.collection("calendarios-eventos");
+  let result = await collection.deleteOne(query);
+  res.send(result).status(200);
+});
 
 
 export default router;
