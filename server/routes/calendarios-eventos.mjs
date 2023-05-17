@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 
 const router = express.Router();
 
-// Consultar departamentos funções
+// Consultar calendario x eventos
 router.get("/", async (req, res) => {
 
   let collection = await db.collection("calendarios-eventos");
@@ -20,10 +20,6 @@ router.get("/", async (req, res) => {
     }
   ])
     .toArray();
-  
-  // let collection = await db.collection("calendarios-eventos");
-  // let results = await collection.find({})
-  //   .toArray();
 
   res.send(results).status(200);
 });
