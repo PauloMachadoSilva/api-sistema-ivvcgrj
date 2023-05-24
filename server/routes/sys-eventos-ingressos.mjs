@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
     res.send(results).status(200);
 });
 
-//Recuperar Senha
+//Recuperar Ingressos
 router.post("/", async (req, res) => {
     let collection = await db.collection("sys-eventos-ingressos");
     // console.log(req);

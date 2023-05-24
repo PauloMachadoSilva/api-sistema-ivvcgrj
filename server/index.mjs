@@ -13,6 +13,7 @@ import calendarioEventos from "./routes/calendarios-eventos.mjs";
 import eventos from "./routes/eventos.mjs";
 import sysEventos from "./routes/sys-eventos.mjs";
 import sysEventosIngressos from "./routes/sys-eventos-ingressos.mjs";
+import sysEventosInscritos from "./routes/sys-eventos-inscritos.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -41,6 +42,7 @@ app.use("/calendarios-eventos", calendarioEventos );
 // Sys Eventos
 app.use("/sys-eventos", sysEventos );
 app.use("/sys-eventos-ingressos", sysEventosIngressos );
+app.use("/sys-eventos-inscritos", sysEventosInscritos );
 
 
 //Email
