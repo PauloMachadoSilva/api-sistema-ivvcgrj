@@ -51,13 +51,11 @@ router.post("/", async (req, res) => {
 
 //Recuperar Ingressos por ID
 router.post("/inscricao", async (req, res) => {
-    let collection = await db.collection("sys-eventos-inscritos");
-    // console.log(req.body.id);
-    let id = ObjectId(req.body.id) ;
+    let collection = await db.collection("sys-eventos-inscritos");  
     let ingressos = {};
-    let usuarios = {};
-    // console.log(result.length > 0);
-  
+    let valid = ObjectId.isValid(req.body.id)
+    let id = valid ? ObjectId(String(req.body.id)) : null ;
+    
     if (id != null) {   
       ingressos = await collection
         .aggregate([
