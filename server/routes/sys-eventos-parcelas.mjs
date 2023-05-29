@@ -23,7 +23,7 @@ router.get("/:valor", async (req, res) => {
         axios.get(`https://pagseguro.uol.com.br/checkout/v2/installments.json?sessionId=${obj}&amount=${valor}&creditCardBrand=${'visa'}`,options)
             .then(function (response) {
                 let ret = response.data.installments;
-                console.log(ret)
+                // console.log(ret)
                 // obj = ret.elements[0].elements[0].elements[0].text;
                 let error = {}
                 if (!ret) res.send(error).status(404);
