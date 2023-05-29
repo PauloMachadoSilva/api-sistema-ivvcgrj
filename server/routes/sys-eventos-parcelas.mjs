@@ -8,7 +8,9 @@ import convert from 'xml-js';
 const router = express.Router();
 var obj;
 //Recuperar Ingressos
-router.get("/", async (req, res) => {
+router.get("/:valor", async (req, res) => {
+    let valor = String(req.params.valor);
+    // console.log(valor)
     const options = {
         headers: {accept: 'application/xml'}
       };
@@ -18,7 +20,7 @@ router.get("/", async (req, res) => {
         let ret = JSON.parse(convert.xml2json(response.data));
         obj = ret.elements[0].elements[0].elements[0].text;
 
-        axios.get(`https://pagseguro.uol.com.br/checkout/v2/installments.json?sessionId=${obj}&amount=${'300.00'}&creditCardBrand=${'visa'}`,options)
+        axios.get(`https://pagseguro.uol.com.br/checkout/v2/installments.json?sessionId=${obj}&amount=${valor}&creditCardBrand=${'visa'}`,options)
             .then(function (response) {
                 let ret = response.data.installments;
                 console.log(ret)
