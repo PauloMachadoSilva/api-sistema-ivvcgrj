@@ -154,4 +154,28 @@ router.post("/meus-eventos", async (req, res) => {
     if (!eventos) res.send(error).status(404);
     else res.send(eventos.length > 0 ? eventos[0].JOIN : eventos).status(200);
   });
+
+  //Alterar Ingresso
+router.post("/:id", async (req, res) => {
+  const query = { _id: ObjectId(req.params.id) };
+  const updates = {
+    $set: { 
+      nome: req.body.nome, 
+      email: req.body.email, 
+      telefone: req.body.telefone, 
+      documento: req.body.cpf, 
+    }
+  }
+
+  // console.log(query);
+  // console.log(updates);
+
+  let collection = await db.collection("sys-eventos-inscritos");
+  let result = await collection.updateOne(query, updates);
+
+  res.send(result).status(200);
+});
+  
+
+
 export default router;
