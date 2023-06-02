@@ -50,8 +50,8 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
       qr = await QRCode.toDataURL(`${String(dados._id)}`);
       qrcode = `
       <div style='border-bottom:2px dotted #00549c;padding:16px'>
-        <h2>Ingresso Avulso</h2>
-        <p>Festa das Nações 2º dia (06/08)</p>
+        <h2>${dados.INGRESSO[0].descricao}</h2>
+        <p>${dados.INGRESSO[0].titulo}</p>
         <p>${dados._id}</p>
         <p>${dados.nome}</p>
         <img style='width:200px' src='${qr}'>
