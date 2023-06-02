@@ -5,9 +5,9 @@ import { environment } from "../environments/environment.mjs";
 import { BodyCreditCardData } from "../shared/compras/body-cartao-credito.mjs";
 import { CompraCreditCardData } from "../shared/compras/compra-credit-card.mjs";
 import convert2 from 'simple-xml-to-json';
-
 import CriarSessao from "../shared/functions/session-pagseguro.mjs";
 import qs from 'qs'
+import enviarEmail from "../emails/index.mjs";
 
 
 const router = express.Router();
@@ -63,7 +63,7 @@ router.post("/", async (req, res) => {
        
         // Envio pedido de compra
         axios.post(`${environment.pagSeguroSandBox.realizarCompraCartaoCredito}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroSandBox.token}`,bodyCompraCartaoCreditoHML,options)
-            .then(function (response) {
+            .then(async function (response) {
                 //Homologação
                 let ret = convert2.convertXML(response.data);
                 let status = ret['transaction']['children'][4].status.content;
@@ -72,8 +72,16 @@ router.post("/", async (req, res) => {
                 let reference = ret['transaction']['children'][2].reference.content;
 
                 //Persistir no banco
-                IncluirCompra(dadosInscricao,status);
-
+                let bd = await IncluirCompra(dadosInscricao,status);
+                let dadosEmail= {
+                  email: dadosUsuario.email,
+                  subject: 'Compra aprovada!',
+                  texto: 'Ingressos'
+                }
+                setTimeout(async () => {
+                  enviarEmail(dadosInscricao[0].codigo_referencia,dadosEmail)
+                }, 2000);
+                
                 let error = {}
                 if (!status) res.send(error).status(404);
                 else res.send(status).status(200);
