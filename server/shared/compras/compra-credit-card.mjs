@@ -25,8 +25,8 @@ export class CompraCreditCardData {
             item: {
                 id:1,
                 description: 'NFC/2023 - Ingressos',
-                quantity: 1,
-                amount: dadosCartao.amount.toFixed(2),
+                quantity: dadosCartao.parcels,
+                amount: dadosCartao.amountParcels.toFixed(2),
             }
         },
         extraAmount: '0.00',
@@ -37,9 +37,9 @@ export class CompraCreditCardData {
         creditCard: {
             token: token,
             installment: {
-                noInterestInstallmentQuantity: 3,
-                quantity: 1,
-                value: dadosCartao.amount.toFixed(2),
+                noInterestInstallmentQuantity: dadosCartao.parcels,
+                quantity: dadosCartao.parcels,
+                value: dadosCartao.amountParcels.toFixed(2),
             },
             holder: {
                 name: 'Nome impresso no cartao',
