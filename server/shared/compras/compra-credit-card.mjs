@@ -37,7 +37,7 @@ export class CompraCreditCardData {
         creditCard: {
             token: token,
             installment: {
-                noInterestInstallmentQuantity: dadosCartao.parcels,
+                noInterestInstallmentQuantity: 3,
                 quantity: dadosCartao.parcels,
                 value: dadosCartao.amountParcels.toFixed(2),
             },
