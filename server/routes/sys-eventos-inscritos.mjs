@@ -176,6 +176,26 @@ router.post("/:id", async (req, res) => {
   res.send(result).status(200);
 });
   
-
+  //Confirmar Ingresso
+  router.post("/confirmar/:id", async (req, res) => {
+    const query = { _id: ObjectId(req.params.id) };
+    let body = req.body;
+    // console.log(query);
+    // console.log(body);
+    const updates = {
+      $set: { 
+        qr_validado: true, 
+        data_validacao: body.data 
+      }
+    }
+  
+    // console.log(query);
+    // console.log(updates);
+  
+    let collection = await db.collection("sys-eventos-inscritos");
+    let result = await collection.updateOne(query, updates);
+  
+    res.send(result).status(200);
+  });
 
 export default router;
