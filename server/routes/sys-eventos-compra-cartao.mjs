@@ -64,7 +64,7 @@ router.post("/", async (req, res) => {
         // console.log('dadosCartao>>>',dadosCartao);
         bodyCompraCartao = !dadosCartao.senderHash 
         ? CompraCreditCardData.CREDIT_CARD_HOM(dadosUsuario,tokenCartao, dadosInscricao[0].codigo_referencia, dadosCartao)
-        : CompraDebitCardData.DEBIT_CARD(dadosUsuario,tokenCartao, dadosCartao)
+        : CompraDebitCardData.DEBIT_CARD(dadosUsuario,dadosInscricao[0], dadosCartao)
         
         //Headers
         header = !dadosCartao.senderHash ? options : urlencoded
@@ -72,8 +72,10 @@ router.post("/", async (req, res) => {
         // Envio pedido de compra
         axios.post(`${environment.pagSeguroSandBox.realizarCompraCartaoCredito}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroSandBox.token}`,bodyCompraCartao,header)
             .then(async function (response) {
+              // console.log(response);
                 //Homologação
                 let ret = convert2.convertXML(response.data);
+                // console.log(ret);
                 //STATUS
                 // Mudanças de status
                 // 1 - Aguardando pagamento
@@ -85,8 +87,8 @@ router.post("/", async (req, res) => {
                 // 7 - Cancelada
                 // 8 - Debitado
                 // 9 - Retenção temporária
-                let status = ret['transaction']['children'][4].status.content;
-                let paymentMethod = ret['transaction']['children'][6].paymentMethod;
+                let status = !dadosCartao.senderHash? ret['transaction']['children'][4].status.content : ret['transaction']['children'][5].status.content;
+                let paymentMethod = !dadosCartao.senderHash? ret['transaction']['children'][6].paymentMethod: ret['transaction']['children'][7].paymentMethod;
                 let code = ret['transaction']['children'][1].code.content;
                 // let reference = ret['transaction']['children'][2].reference.content;
 

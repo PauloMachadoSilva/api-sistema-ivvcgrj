@@ -2,7 +2,7 @@ import qs from 'qs'
 import { environment } from '../../environments/environment.mjs'
 export class CompraDebitCardData {
   
-  static DEBIT_CARD(data,token,cartao) {
+  static DEBIT_CARD(data,inscricao,cartao) {
     let card = {
         paymentMode:'default',
         paymentMethod:'eft',
@@ -15,7 +15,7 @@ export class CompraDebitCardData {
         itemAmount1: cartao.amount.toFixed(2),
         itemQuantity1:1,
         notificationURL:'https://verbocampogranderj.com.br/',
-        reference:data.codigo_referencia,
+        reference:inscricao.codigo_referencia,
         senderName:data.nome,
         senderCPF:data.cpf,
         senderAreaCode:String(data.telefone).slice(0,2),
@@ -33,7 +33,7 @@ export class CompraDebitCardData {
         shippingType:1,
         shippingCost:'0.00',
     }
-
+    // console.log('card>>',card)
     return qs.stringify(card)
   }
 }
