@@ -11,7 +11,7 @@ export class CompraDebitCardData {
         currency:'BRL',
         extraAmount:'0.00',
         itemId1:'0001',
-        itemDescription1:'Festa das Nações - Ingresso',
+        itemDescription1:'Festa das Nações - Ingresso - R$ '+ cartao.amount,
         itemAmount1: cartao.amount.toFixed(2),
         itemQuantity1:1,
         notificationURL:'https://verbocampogranderj.com.br/',

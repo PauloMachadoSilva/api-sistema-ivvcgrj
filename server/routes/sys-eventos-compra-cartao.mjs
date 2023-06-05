@@ -93,7 +93,7 @@ router.post("/", async (req, res) => {
                 // let reference = ret['transaction']['children'][2].reference.content;
 
                 //Persistir no banco
-                let bd = await IncluirCompra(dadosInscricao,status);
+                let bd = await IncluirCompra(dadosInscricao,status,code);
                 
                 //ENVIAR EMAILS DE APROVAÇÃO
                 let dadosEmail= {
@@ -119,12 +119,13 @@ router.post("/", async (req, res) => {
       });
   });
 
-  async function IncluirCompra(dadosInscricao, status){
+  async function IncluirCompra(dadosInscricao, status, code){
     let collection = await db.collection("sys-eventos-inscritos");
     // console.log('dadosInscricao->',dadosInscricao);
     let asinscricoes = dadosInscricao.forEach(async (ret)=>{
         // console.log('ret->>>',ret)
         ret.status_compra = status;
+        ret.codigo_transacao = code.replaceAll('-','');
         await collection.insertOne(ret);
     })    
   }

@@ -24,7 +24,7 @@ export class CompraCreditCardData {
         items: {
             item: {
                 id:1,
-                description: 'NFC/2023 - Ingressos',
+                description: 'NFC/2023 - Ingressos - R$ ' + dadosCartao.amount,
                 quantity: dadosCartao.parcels,
                 amount: dadosCartao.amountParcels.toFixed(2),
             }
@@ -37,7 +37,7 @@ export class CompraCreditCardData {
         creditCard: {
             token: token,
             installment: {
-                noInterestInstallmentQuantity: 3,
+                noInterestInstallmentQuantity: 12,
                 quantity: dadosCartao.parcels,
                 value: dadosCartao.amountParcels.toFixed(2),
             },
@@ -79,7 +79,7 @@ export class CompraCreditCardData {
         currency:'BRL',
         extraAmount:1.00,
         itemId1:'0001',
-        itemDescription1:'Festa das Nações - Ingresso',
+        itemDescription1:'Festa das Nações - Ingresso - R$ ' + dadosCartao.amount,
         itemAmount1:0,
         itemQuantity1:1,
         notificationURL:'https://verbocampogranderj.com.br/',
@@ -103,7 +103,7 @@ export class CompraCreditCardData {
         creditCardToken: token,
         installmentQuantity: 1,
         installmentValue: 0,
-        noInterestInstallmentQuantity: data.quantidadeParcela,
+        noInterestInstallmentQuantity: 12,
         creditCardHolderName: data.nome,
         creditCardHolderCPF: data.telefone,
         creditCardHolderBirthDate:'',
