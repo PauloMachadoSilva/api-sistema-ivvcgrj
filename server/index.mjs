@@ -12,6 +12,7 @@ import visitantes from "./routes/visitantes.mjs";
 import calendarioEventos from "./routes/calendarios-eventos.mjs";
 import eventos from "./routes/eventos.mjs";
 import sysEventos from "./routes/sys-eventos.mjs";
+import sysEventosUsuarios from "./routes/sys-eventos-usuarios.mjs";
 import sysEventosIngressos from "./routes/sys-eventos-ingressos.mjs";
 import sysEventosInscritos from "./routes/sys-eventos-inscritos.mjs";
 import sysEventosParcelas from "./routes/sys-eventos-parcelas.mjs";
@@ -44,6 +45,7 @@ app.use("/calendarios-eventos", calendarioEventos );
 
 // Sys Eventos
 app.use("/sys-eventos", sysEventos );
+app.use("/sys-eventos-usuarios", sysEventosUsuarios );
 app.use("/sys-eventos-ingressos", sysEventosIngressos );
 app.use("/sys-eventos-inscritos", sysEventosInscritos );
 app.use("/sys-eventos-parcelas", sysEventosParcelas);
