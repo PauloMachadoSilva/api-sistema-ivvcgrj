@@ -28,6 +28,9 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   let collection = await db.collection("calendarios-eventos");
   let newDocument = req.body;
+  // console.log('newDocument',newDocument);
+  newDocument.id_evento === '1'? newDocument.id_evento = '64807ce2faa90aa91e5a1fbc' : newDocument.id_evento = newDocument.id_evento;
+  
   let result = await collection.insertOne(newDocument);
   res.send(result).status(200);
 
