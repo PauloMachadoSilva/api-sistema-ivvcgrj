@@ -36,16 +36,19 @@ router.post("/", async (req, res) => {
 router.post("/alterar-evento/:_id", async (req, res) => {
   const query = { _id: ObjectId(req.params._id) };
   // console.log(query);
+  let hora = req.body.hora.length < 6 ? [req.body.hora.slice(0, 2), ':', req.body.hora.slice(2)].join('') : req.body.hora;
   const updates = {
     $set: {
       descricao: req.body.descricao,
       local: req.body.local,
-      hora: req.body.hora,
+      hora: hora,
       observacao: req.body.observacao,
       tipo: req.body.tipo,
       confirmado: req.body.confirmado,
+      cor: req.body.cor
     },
   };
+  // console.log(updates);
 
   let collection = await db.collection("eventos");
   let result = await collection.updateOne(query, updates);

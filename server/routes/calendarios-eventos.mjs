@@ -54,5 +54,28 @@ router.delete("/:id", async (req, res) => {
   res.send(result).status(200);
 });
 
+router.post("/alterar-evento-calendario/:_id", async (req, res) => {
+  const query = { _id: ObjectId(req.params._id) };
+  console.log(req.body.hora);
+  let hora = req.body.hora.length < 6 ? [req.body.hora.slice(0, 2), ':', req.body.hora.slice(2)].join('') : req.body.hora;
+  const updates = {
+    $set: {
+      descricao: req.body.descricao,
+      local: req.body.local,
+      hora: hora,
+      observacao: req.body.observacao,
+      tipo: Number(req.body.tipo),
+      confirmado: req.body.confirmado,
+      cor: req.body.cor
+    },
+  };
+  console.log(updates);
+
+  let collection = await db.collection("calendarios-eventos");
+  let result = await collection.updateOne(query, updates);
+  res.send(result).status(200);
+
+});
+
 
 export default router;
