@@ -1,5 +1,6 @@
 import express from "express";
 import db from "../db/conn.mjs";
+import enviarEmail from "../emails/index.mjs";
 
 const router = express.Router();
 
@@ -34,6 +35,17 @@ router.post("/", async (req, res) => {
         ret.codigo_presencial = dadosCompra.codigo_presencial;
         result =  await collection.insertOne(ret);
     })    
+
+    let dadosEmail= {
+        email: dadosCompra.email,
+        subject: 'Compra aprovada!',
+        texto: 'Ingressos'
+      }
+
+    setTimeout(async () => {
+        enviarEmail(dadosInscricao[0].codigo_referencia,dadosEmail)
+      }, 2000);
+
     result = '3'
     let error = {}
     if (!result) res.send(error).status(404);

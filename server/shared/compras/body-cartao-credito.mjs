@@ -18,11 +18,11 @@ export class BodyCreditCardData {
         var data =  {
             sessionId:sessao,
             amount:data.amount,
-            cardNumber:5447318470143641,
+            cardNumber: data.cardNumber,
             cardBrand:'visa',
-            cardExpirationMonth:12,
-            cardExpirationYear:2027,
-            cardCvv:'097'
+            cardExpirationMonth: data.cardExpirationMonth,
+            cardExpirationYear: data.cardExpirationYear,
+            cardCvv: data.cardCvv
             }
         
         return data;

@@ -52,10 +52,18 @@ router.post("/", async (req, res) => {
     //Retorna Session
     const sessao = await CriarSessao();
     
-    bodyCartaoCredito = BodyCreditCardData.BODY_CARTAO_CREDITO_HOM(params,sessao)
+    bodyCartaoCredito = BodyCreditCardData.BODY_CARTAO_CREDITO_HOM(dadosCartao,sessao)
     //Criar token do cartao
     axios.post(`${environment.pagSeguroSandBox.obterTokenCartao}`,qs.stringify(bodyCartaoCredito),urlencoded)
-      .then(function (response) {
+    .catch(({ response }) => { 
+      // console.log('RESPONSE>',response.data);  
+      // console.log(response.headers);  
+      // console.log(response.status);
+      if (response.status !== 200) {
+        res.send('7').status(200);
+      }  
+    })    
+    .then(function (response) {
         let tokenCartao = response.data.token;
         // console.log(tokenCartao);
         // console.log('dadosInscricao[0]',dadosInscricao[0].codigo_referencia);
@@ -71,8 +79,18 @@ router.post("/", async (req, res) => {
         
         // Envio pedido de compra
         axios.post(`${environment.pagSeguroSandBox.realizarCompraCartaoCredito}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroSandBox.token}`,bodyCompraCartao,header)
-            .then(async function (response) {
-              // console.log(response);
+        .catch(({ response }) => { 
+          // console.log('RESPONSE>',response.data);  
+          // console.log(response.headers);  
+          // console.log(response.status);
+          if (response.status !== 200) {
+            res.send('7').status(200);
+          }  
+        })    
+        .then(async function (response) {
+                  if (!response) {
+                  return;
+                }
                 //Homologação
                 let ret = convert2.convertXML(response.data);
                 // console.log(ret);
