@@ -17,7 +17,9 @@ export const environment = {
         cartaoTesteBandeira:'visa',
         cartaoTesteMes:'12',
         cartaoTesteAno:'2030',
-        cartaoTesteCVV:'123'
+        cartaoTesteCVV:'123',
+        ApiPix: 'https://sandbox.api.pagseguro.com/orders',
+        ApixValidarPagamentoPix: 'https://sandbox.api.pagseguro.com/pix/pay/'
     },
     pagSeguroProd: {
         // contaEmail: 'pauloems@yahoo.com.br',

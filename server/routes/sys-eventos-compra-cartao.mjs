@@ -1,15 +1,15 @@
 import express from "express";
-import axios from 'axios';
+import axios from "axios";
 import db from "../db/conn.mjs";
 import { environment } from "../environments/environment.mjs";
 import { BodyCreditCardData } from "../shared/compras/body-cartao-credito.mjs";
 import { CompraCreditCardData } from "../shared/compras/compra-credit-card.mjs";
 import { CompraDebitCardData } from "../shared/compras/compra-debit-card.mjs";
-import convert2 from 'simple-xml-to-json';
+import convert2 from "simple-xml-to-json";
 import CriarSessao from "../shared/functions/session-pagseguro.mjs";
-import qs from 'qs'
+import qs from "qs";
 import enviarEmail from "../emails/index.mjs";
-
+import enviarEmailErroCartao from "../emails/email-erro-cartao.mjs";
 
 const router = express.Router();
 var tokenCartao;
@@ -21,132 +21,167 @@ var header;
 
 //Recuperar Ingressos
 router.post("/", async (req, res) => {
-    let valor = String(req.params.valor);
-    let params = req.body;
-    let dadosUsuario;
-    let dadosInscricao;
-    let dadosCartao;
+  let valor = String(req.params.valor);
+  let params = req.body;
+  let dadosUsuario;
+  let dadosInscricao;
+  let dadosCartao;
 
-    let usuario = params.forEach((ret)=>{
-        dadosUsuario = ret.usuario
-    })
-
-    let inscricao = params.forEach((ret)=>{
-        dadosInscricao = ret.inscricao
-    })
-
-    let cartao = params.forEach((ret)=>{
-        dadosCartao = ret.dadosCartao
-    })
-
-    
-
-    const options = {
-        headers: {'Content-Type': 'application/xml'}
-      };
-
-      const urlencoded = {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'}
-      };
-
-    //Retorna Session
-    const sessao = await CriarSessao();
-    
-    bodyCartaoCredito = BodyCreditCardData.BODY_CARTAO_CREDITO_HOM(dadosCartao,sessao)
-    //Criar token do cartao
-    axios.post(`${environment.pagSeguroSandBox.obterTokenCartao}`,qs.stringify(bodyCartaoCredito),urlencoded)
-    .catch(({ response }) => { 
-      // console.log('RESPONSE>',response.data);  
-      // console.log(response.headers);  
-      // console.log(response.status);
-      if (response.status !== 200) {
-        res.send('7').status(200);
-      }  
-    })    
-    .then(function (response) {
-        let tokenCartao = response.data.token;
-        // console.log(tokenCartao);
-        // console.log('dadosInscricao[0]',dadosInscricao[0].codigo_referencia);
-        
-        //Homologação
-        // console.log('dadosCartao>>>',dadosCartao);
-        bodyCompraCartao = !dadosCartao.senderHash 
-        ? CompraCreditCardData.CREDIT_CARD_HOM(dadosUsuario,tokenCartao, dadosInscricao[0].codigo_referencia, dadosCartao)
-        : CompraDebitCardData.DEBIT_CARD(dadosUsuario,dadosInscricao[0], dadosCartao)
-        
-        //Headers
-        header = !dadosCartao.senderHash ? options : urlencoded
-        
-        // Envio pedido de compra
-        axios.post(`${environment.pagSeguroSandBox.realizarCompraCartaoCredito}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroSandBox.token}`,bodyCompraCartao,header)
-        .catch(({ response }) => { 
-          // console.log('RESPONSE>',response.data);  
-          // console.log(response.headers);  
-          // console.log(response.status);
-          if (response.status !== 200) {
-            res.send('7').status(200);
-          }  
-        })    
-        .then(async function (response) {
-                  if (!response) {
-                  return;
-                }
-                //Homologação
-                let ret = convert2.convertXML(response.data);
-                // console.log(ret);
-                //STATUS
-                // Mudanças de status
-                // 1 - Aguardando pagamento
-                // 2 - Em análise
-                // 3 - Paga
-                // 4 - Disponível
-                // 5 - Em disputa
-                // 6 - Devolvida
-                // 7 - Cancelada
-                // 8 - Debitado
-                // 9 - Retenção temporária
-                let status = !dadosCartao.senderHash? ret['transaction']['children'][4].status.content : ret['transaction']['children'][5].status.content;
-                let paymentMethod = !dadosCartao.senderHash? ret['transaction']['children'][6].paymentMethod: ret['transaction']['children'][7].paymentMethod;
-                let code = ret['transaction']['children'][1].code.content;
-                // let reference = ret['transaction']['children'][2].reference.content;
-
-                //Persistir no banco
-                let bd = await IncluirCompra(dadosInscricao,status,code);
-                
-                //ENVIAR EMAILS DE APROVAÇÃO
-                let dadosEmail= {
-                  email: dadosUsuario.email,
-                  subject: 'Compra aprovada!',
-                  texto: 'Ingressos'
-                }
-                
-                setTimeout(async () => {
-                  enviarEmail(dadosInscricao[0].codigo_referencia,dadosEmail)
-                }, 2000);
-                
-                let error = {}
-                if (!status) res.send(error).status(404);
-                else res.send(status).status(200);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+  let usuario = params.forEach((ret) => {
+    dadosUsuario = ret.usuario;
   });
 
-  async function IncluirCompra(dadosInscricao, status, code){
-    let collection = await db.collection("sys-eventos-inscritos");
-    // console.log('dadosInscricao->',dadosInscricao);
-    let asinscricoes = dadosInscricao.forEach(async (ret)=>{
-        // console.log('ret->>>',ret)
-        ret.status_compra = status;
-        ret.codigo_transacao = code.replaceAll('-','');
-        await collection.insertOne(ret);
-    })    
-  }
+  let inscricao = params.forEach((ret) => {
+    dadosInscricao = ret.inscricao;
+  });
+
+  let cartao = params.forEach((ret) => {
+    dadosCartao = ret.dadosCartao;
+  });
+
+  const options = {
+    headers: { "Content-Type": "application/xml" },
+  };
+
+  const urlencoded = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+  };
+
+  //Retorna Session
+  const sessao = await CriarSessao();
+
+  bodyCartaoCredito = BodyCreditCardData.BODY_CARTAO_CREDITO_PRD(
+    dadosCartao,
+    sessao
+  );
+  //Criar token do cartao
+  axios
+    .post(
+      `${environment.pagSeguroSandBox.obterTokenCartao}`,
+      qs.stringify(bodyCartaoCredito),
+      urlencoded
+    )
+    .catch(({ response }) => {
+      // console.log('RESPONSE>',response.data);
+      // console.log(response.headers);
+      // console.log(response.status);
+      if (response.status !== 200) {
+        res.send("7").status(200);
+      }
+    })
+    .then(function (response) {
+      let tokenCartao = response.data.token;
+      // console.log(tokenCartao);
+      // console.log('dadosInscricao[0]',dadosInscricao[0].codigo_referencia);
+
+      //Homologação
+      // console.log('dadosCartao>>>',dadosCartao);
+      // bodyCompraCartao = !dadosCartao.senderHash
+      // ? CompraCreditCardData.CREDIT_CARD_PRD(dadosUsuario,tokenCartao, dadosInscricao[0].codigo_referencia, dadosCartao)
+      // : CompraDebitCardData.DEBIT_CARD(dadosUsuario,dadosInscricao[0], dadosCartao)
+
+      bodyCompraCartao = CompraCreditCardData.CREDIT_CARD_PRD(
+        dadosUsuario,
+        tokenCartao,
+        dadosInscricao[0].codigo_referencia,
+        dadosCartao
+      );
+      //Headers
+      // header = !dadosCartao.senderHash ? options : urlencoded
+
+      header = urlencoded;
+
+      // Envio pedido de compra
+      axios
+        .post(
+          `${environment.pagSeguroProd.realizarCompraCartaoCredito}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroProd.token}`,
+          bodyCompraCartao,
+          header
+        )
+        .catch(({ response }) => {
+          console.log("RESPONSE>", response);
+          // console.log(response.headers);
+          // console.log(response.status);
+          if (response.status !== 200) {
+            res.send("7").status(200);
+          }
+        })
+        .then(async function (response) {
+          if (!response) {
+            return;
+          }
+          //Homologação
+          let ret = convert2.convertXML(response.data);
+
+          let status = ret["transaction"]["children"][4].status.content; //Produção
+          let paymentMethod = ret["transaction"]["children"][6].paymentMethod;
+          let code = ret["transaction"]["children"][1].code.content;
+
+          //Consultar Notificação
+          consutarNotificacaoCompra(code);
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    async function consutarNotificacaoCompra(code) {
+      axios
+        .get(
+          `${environment.pagSeguroProd.realizarCompraCartaoCredito}${code}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroProd.token}`,
+          header
+        )
+        .catch(({ response }) => {
+          // console.log("RESPONSE CONSULTA CATCH>", response);
+          // console.log(response.headers);
+          // console.log(response.status);
+          if (response.status !== 200) {
+            res.send("7").status(200);
+          }
+        })
+        .then(async function (response) {
+          let ret = convert2.convertXML(response.data);
+          // console.log("ret>>", ret);
+          let status = ret["transaction"]["children"][4].status.content; //Produção
+    
+          //Persistir no banco
+          //Futuramente implementar banco de recusas
+          if (status === 3) {
+            let bd = await IncluirCompra(dadosInscricao, status, code);
+          }
+          //ENVIAR EMAILS DE APROVAÇÃO
+          let dadosEmail = {
+            email: dadosUsuario.email,
+            subject: status === 3 ? "Compra aprovada!" : "Compra não aprovada",
+            texto: "Ingressos",
+          };
+    
+          setTimeout(async () => {
+            if (status === 3) {
+              enviarEmail(dadosInscricao[0].codigo_referencia, dadosEmail);
+            } else {
+              enviarEmailErroCartao(
+                dadosUsuario,
+                dadosEmail
+              );
+            }
+          }, 2000);
+    
+          let retStatus = {
+            status_compra: status,
+          };
+    
+          if (!retStatus) res.send(error).status(404);
+          else res.send(retStatus).status(200);
+        });
+    }
+});
 
 
 export default router;

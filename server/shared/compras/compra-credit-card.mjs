@@ -1,4 +1,5 @@
 import json2xml from 'json2xml';
+import qs from 'qs'
 export class CompraCreditCardData {
   static CREDIT_CARD_HOM(dadosUsuario,token,referencia,dadosCartao) {
     
@@ -67,29 +68,30 @@ export class CompraCreditCardData {
             }
         }
     };
-    let xml = json2xml({payment})
+    let xml = payment
     return xml
   }
 
-  static CREDIT_CARD_PRD(data,token) {
+  static CREDIT_CARD_PRD(dadosUsuario,token,referencia,dadosCartao) {
+
     let card = {
         paymentMode:'default',
-        paymentMethod:'creditCard',
-        receiverEmail:'eventos@verbocampogranderj.com.br',
+        paymentMethod:'credit_card',
+        receiverEmail:'juniorjosiasf@gmail.com',
         currency:'BRL',
-        extraAmount:1.00,
+        extraAmount:'0.00',
         itemId1:'0001',
-        itemDescription1:'Festa das Nações - Ingresso - R$ ' + dadosCartao.amount,
-        itemAmount1:0,
-        itemQuantity1:1,
+        itemDescription1:'Festa das Nações - Ingresso - R$ ' + dadosCartao.amountParcels.toFixed(2),
+        itemAmount1: dadosCartao.amountParcels.toFixed(2),
+        itemQuantity1: 1,
         notificationURL:'https://verbocampogranderj.com.br/',
-        reference:data.codigo_referencia,
-        senderName:data.nome,
-        senderCPF:data.cpf,
-        senderAreaCode:21,
-        senderPhone:data.telefone,
-        senderEmail:data.email,
-        senderHash:'ADICIONE O HASH',
+        reference:referencia,
+        senderName:dadosUsuario.nome,
+        senderCPF:dadosUsuario.cpf,
+        senderAreaCode: String(dadosUsuario.telefone).slice(0,2),
+        senderPhone: String(dadosUsuario.telefone).slice(2,11),
+        senderEmail: dadosUsuario.email,
+        senderHash: dadosCartao.senderHash,
         shippingAddressStreet: 'R. Alfredo de Morais',
         shippingAddressNumber: 685,
         shippingAddressComplement: '',
@@ -98,27 +100,26 @@ export class CompraCreditCardData {
         shippingAddressCity: 'Rio de Janeiro',
         shippingAddressState: 'RJ',
         shippingAddressCountry: 'BRA',
-        shippingType :0,
-        shippingCost: 0.00,
+        shippingType :1,
+        shippingCost: '0.00',
         creditCardToken: token,
         installmentQuantity: 1,
-        installmentValue: 0,
+        installmentValue: '1.00',
         noInterestInstallmentQuantity: 12,
-        creditCardHolderName: data.nome,
-        creditCardHolderCPF: data.telefone,
-        creditCardHolderBirthDate:'',
-        creditCardHolderAreaCode:'',
-        creditCardHolderPhone:'',
+        creditCardHolderName: dadosUsuario.nome,
+        creditCardHolderCPF: dadosUsuario.cpf,
+        creditCardHolderBirthDate:'01/01/2001',
+        creditCardHolderAreaCode:'21',
+        creditCardHolderPhone:'24157796',
         billingAddressStreet: 'R. Alfredo de Morais',
         billingAddressNumber: 685,
         billingAddressComplement:'',
         billingAddressDistrict: 'Campo Grande',
         billingAddressPostalCode: 23080100,
         billingAddressCity: 'Rio de Janeiro',
-        billingAddressState:'',
+        billingAddressState:'RJ',
         billingAddressCountry:'BRA'
     }
-
     return qs.stringify(card)
   }
 }
