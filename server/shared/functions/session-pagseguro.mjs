@@ -13,7 +13,7 @@ var obj='';
     //Criando sessao
     return await axios
       .post(
-        `${environment.pagSeguroSandBox.criarSecao}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroSandBox.token}`,
+        `${environment.pagSeguroProd.criarSecao}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroProd.token}`,
         options
       )
       .then(function (response) {

@@ -52,6 +52,8 @@ router.post("/", async (req, res) => {
   //Retorna Session
   const sessao = await CriarSessao();
 
+  // console.log('sessao->',sessao)
+
   bodyCartaoCredito = BodyCreditCardData.BODY_CARTAO_CREDITO_PRD(
     dadosCartao,
     sessao
@@ -59,21 +61,24 @@ router.post("/", async (req, res) => {
   //Criar token do cartao
   axios
     .post(
-      `${environment.pagSeguroSandBox.obterTokenCartao}`,
+      `${environment.pagSeguroProd.obterTokenCartao}`,
       qs.stringify(bodyCartaoCredito),
       urlencoded
     )
     .catch(({ response }) => {
-      // console.log('RESPONSE>',response.data);
+      console.log('RESPONSE>',response.data);
       // console.log(response.headers);
       // console.log(response.status);
       if (response.status !== 200) {
-        res.send("7").status(200);
+        let retStatus = {
+          status_compra: '7',
+        };
+        res.send(retStatus).status(200);
       }
     })
     .then(function (response) {
       let tokenCartao = response.data.token;
-      // console.log(tokenCartao);
+      // console.log('tokenCartao>',tokenCartao);
       // console.log('dadosInscricao[0]',dadosInscricao[0].codigo_referencia);
 
       //Homologação
@@ -101,11 +106,14 @@ router.post("/", async (req, res) => {
           header
         )
         .catch(({ response }) => {
-          console.log("RESPONSE>", response);
+          console.log("RESPONSE>", response.data);
           // console.log(response.headers);
           // console.log(response.status);
           if (response.status !== 200) {
-            res.send("7").status(200);
+            let retStatus = {
+              status_compra: '7',
+            };
+            res.send(retStatus).status(200);
           }
         })
         .then(async function (response) {
@@ -119,8 +127,10 @@ router.post("/", async (req, res) => {
           let paymentMethod = ret["transaction"]["children"][6].paymentMethod;
           let code = ret["transaction"]["children"][1].code.content;
 
+          // console.log('Status Pedido->',code)
+
           //Consultar Notificação
-          consutarNotificacaoCompra(code);
+          await consutarNotificacaoCompra(code);
 
         })
         .catch(function (error) {
@@ -142,28 +152,31 @@ router.post("/", async (req, res) => {
           // console.log(response.headers);
           // console.log(response.status);
           if (response.status !== 200) {
-            res.send("7").status(200);
+            let retStatus = {
+              status_compra: '7',
+            };
+            res.send(retStatus).status(200);
           }
         })
         .then(async function (response) {
           let ret = convert2.convertXML(response.data);
           // console.log("ret>>", ret);
           let status = ret["transaction"]["children"][4].status.content; //Produção
-    
+          // console.log("ret>>", status);
           //Persistir no banco
           //Futuramente implementar banco de recusas
-          if (status === 3) {
+          if (Number(status) === 3) {
             let bd = await IncluirCompra(dadosInscricao, status, code);
           }
           //ENVIAR EMAILS DE APROVAÇÃO
           let dadosEmail = {
             email: dadosUsuario.email,
-            subject: status === 3 ? "Compra aprovada!" : "Compra não aprovada",
+            subject: Number(status) === 3 ? "Compra aprovada!" : "Compra não aprovada",
             texto: "Ingressos",
           };
     
           setTimeout(async () => {
-            if (status === 3) {
+            if (Number(status) === 3) {
               enviarEmail(dadosInscricao[0].codigo_referencia, dadosEmail);
             } else {
               enviarEmailErroCartao(
@@ -183,5 +196,15 @@ router.post("/", async (req, res) => {
     }
 });
 
+async function IncluirCompra(dadosInscricao, status, code){
+  let collection = await db.collection("sys-eventos-inscritos");
+  // console.log('dadosInscricao->',dadosInscricao);
+  let asinscricoes = dadosInscricao.forEach(async (ret)=>{
+      // console.log('ret->>>',ret)
+      ret.status_compra = status;
+      ret.codigo_transacao = code.replaceAll('-','');
+      await collection.insertOne(ret);
+  })    
+}
 
 export default router;

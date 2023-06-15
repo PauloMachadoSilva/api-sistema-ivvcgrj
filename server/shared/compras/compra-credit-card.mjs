@@ -104,7 +104,7 @@ export class CompraCreditCardData {
         shippingCost: '0.00',
         creditCardToken: token,
         installmentQuantity: 1,
-        installmentValue: '1.00',
+        installmentValue: dadosCartao.amountParcels.toFixed(2),
         noInterestInstallmentQuantity: 12,
         creditCardHolderName: dadosUsuario.nome,
         creditCardHolderCPF: dadosUsuario.cpf,
