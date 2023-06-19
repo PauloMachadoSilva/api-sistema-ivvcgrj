@@ -3,6 +3,8 @@ import axios from "axios";
 import convertXML from "simple-xml-to-json";
 import convert from "xml-js";
 import { environment } from "../../environments/environment.mjs";
+import logsSysEventos from "../../logs/logs-sys-eventos.mjs";
+
 
 const options = {
     headers: {accept: 'application/xml'}
@@ -16,12 +18,14 @@ var obj='';
         `${environment.pagSeguroProd.criarSecao}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroProd.token}`,
         options
       )
-      .then(function (response) {
+      .then(async function (response) {
         let ret = JSON.parse(convert.xml2json(response.data));
-        obj = ret.elements[0].elements[0].elements[0].text; 
+        obj = ret.elements[0].elements[0].elements[0].text;
+        let log_result = await logsSysEventos(obj, 200, environment.pagSeguroProd.contaEmail, '', 'sessions'); 
         return obj; 
       })
-      .catch(function (error) {
+      .catch(async function (error) {
+        let log_result = await logsSysEventos(error, 500, environment.pagSeguroProd.contaEmail, '', 'sessions');
         console.log(error);
       });
   }

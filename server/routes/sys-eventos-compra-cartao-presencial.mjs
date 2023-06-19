@@ -1,6 +1,9 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import enviarEmail from "../emails/index.mjs";
+import logsSysEventos from "../logs/logs-sys-eventos.mjs";
+
+
 
 const router = express.Router();
 
@@ -50,6 +53,10 @@ router.post("/", async (req, res) => {
     let error = {}
     if (!result) res.send(error).status(404);
     else res.send(result).status(200);
+
+    let log_result = await logsSysEventos(3, 200, dadosUsuario, dadosInscricao, 'presencial');
+
+    
 })
 
 

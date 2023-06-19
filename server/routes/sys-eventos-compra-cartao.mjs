@@ -10,6 +10,7 @@ import CriarSessao from "../shared/functions/session-pagseguro.mjs";
 import qs from "qs";
 import enviarEmail from "../emails/index.mjs";
 import enviarEmailErroCartao from "../emails/email-erro-cartao.mjs";
+import logsSysEventos from "../logs/logs-sys-eventos.mjs";
 
 const router = express.Router();
 var tokenCartao;
@@ -65,21 +66,35 @@ router.post("/", async (req, res) => {
       qs.stringify(bodyCartaoCredito),
       urlencoded
     )
-    .catch(({ response }) => {
-      console.log('RESPONSE>',response.data);
+    .catch(async ({ response }) => {
+      // console.log('RESPONSE>',response);
       // console.log(response.headers);
       // console.log(response.status);
       if (response.status !== 200) {
         let retStatus = {
           status_compra: '7',
         };
+      
+      //ENVIAR EMAILS DE APROVAÇÃO
+      let dadosEmail = {
+        email: dadosUsuario.email,
+        subject: "Compra não aprovada",
+        texto: "Ingressos",
+      };
+
+        enviarEmailErroCartao(
+          dadosUsuario,
+          dadosEmail
+        );
+        let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao');
         res.send(retStatus).status(200);
       }
     })
-    .then(function (response) {
+    .then(async function (response) {
       let tokenCartao = response.data.token;
       // console.log('tokenCartao>',tokenCartao);
       // console.log('dadosInscricao[0]',dadosInscricao[0].codigo_referencia);
+      let log_result = await logsSysEventos(tokenCartao, 200, dadosUsuario, dadosInscricao, 'cartao');
 
       //Homologação
       // console.log('dadosCartao>>>',dadosCartao);
@@ -105,14 +120,27 @@ router.post("/", async (req, res) => {
           bodyCompraCartao,
           header
         )
-        .catch(({ response }) => {
-          console.log("RESPONSE>", response.data);
+        .catch(async ({ response }) => {
+          // console.log("RESPONSE>", response);
           // console.log(response.headers);
           // console.log(response.status);
           if (response.status !== 200) {
             let retStatus = {
               status_compra: '7',
             };
+
+          //ENVIAR EMAIL DE NÃO APROVADO
+          let dadosEmail = {
+            email: dadosUsuario.email,
+            subject: "Compra não aprovada",
+            texto: "Ingressos",
+          };
+
+            enviarEmailErroCartao(
+              dadosUsuario,
+              dadosEmail
+            );
+            let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao');
             res.send(retStatus).status(200);
           }
         })
@@ -128,16 +156,21 @@ router.post("/", async (req, res) => {
           let code = ret["transaction"]["children"][1].code.content;
 
           // console.log('Status Pedido->',code)
+          // console.log('response->',response)
+
+          let log_result = await logsSysEventos(code, Number(status), dadosUsuario, dadosInscricao, 'cartao');
 
           //Consultar Notificação
           await consutarNotificacaoCompra(code);
 
         })
-        .catch(function (error) {
+        .catch(async function (error) {
           console.log(error);
+          let log_result = await logsSysEventos(error, 500, dadosUsuario, dadosInscricao, 'cartao');
         });
     })
-    .catch(function (error) {
+    .catch(async function (error) {
+      let log_result = await logsSysEventos(error, 500, dadosUsuario, dadosInscricao, 'cartao');
       console.log(error);
     });
 
@@ -147,15 +180,28 @@ router.post("/", async (req, res) => {
           `${environment.pagSeguroProd.realizarCompraCartaoCredito}${code}?email=${environment.pagSeguroProd.contaEmail}&token=${environment.pagSeguroProd.token}`,
           header
         )
-        .catch(({ response }) => {
+        .catch(async ({ response }) => {
           // console.log("RESPONSE CONSULTA CATCH>", response);
           // console.log(response.headers);
           // console.log(response.status);
+
           if (response.status !== 200) {
             let retStatus = {
               status_compra: '7',
             };
-            res.send(retStatus).status(200);
+
+            let dadosEmail = {
+              email: dadosUsuario.email,
+              subject: "Compra não aprovada",
+              texto: "Ingressos",
+            };
+  
+              enviarEmailErroCartao(
+                dadosUsuario,
+                dadosEmail
+              );
+              let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao');
+              res.send(retStatus).status(200);
           }
         })
         .then(async function (response) {
@@ -167,6 +213,13 @@ router.post("/", async (req, res) => {
           //Futuramente implementar banco de recusas
           if (Number(status) === 3) {
             let bd = await IncluirCompra(dadosInscricao, status, code);
+            let log_result = await logsSysEventos(code, Number(status), dadosUsuario, dadosInscricao, 'cartao');
+
+          }
+          else 
+          {
+            let log_result = await logsSysEventos(status, response.status, dadosUsuario, dadosInscricao, 'cartao');
+
           }
           //ENVIAR EMAILS DE APROVAÇÃO
           let dadosEmail = {
