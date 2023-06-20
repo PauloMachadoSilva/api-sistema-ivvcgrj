@@ -31,6 +31,9 @@ export const environment = {
         obterBandeiraCartao: 'https://df.uol.com.br/df-fe/mvc/creditcard/v1/getBin', //GET
         obterCondicoesParcelamento: 'https://pagseguro.uol.com.br/checkout/v2/installments.json', //GET
         realizarCompraCartaoCredito: 'https://ws.pagseguro.uol.com.br/v2/transactions/', //POST
-        obterCompraCodigoReferencia: 'https://ws.pagseguro.uol.com.br/v2/transactions' //GET
+        obterCompraCodigoReferencia: 'https://ws.pagseguro.uol.com.br/v2/transactions', //GET
+        consultarPagamentoPix: 'https://api.pagseguro.com/orders', //GET
+        gerarPagamentoPix: 'https://api.pagseguro.com/orders', //POST
+        consultarNotificacoes: 'https://ws.pagseguro.uol.com.br/v2/transactions/notifications', //POST
     }
 }

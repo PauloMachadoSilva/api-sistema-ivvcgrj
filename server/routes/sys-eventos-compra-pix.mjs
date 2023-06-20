@@ -27,6 +27,8 @@ router.post("/", async (req, res) => {
   let dadosInscricao;
   let dadosPix;
   let dadosCompra;
+  let dadosValorPix;
+  
 
   let usuario = params.forEach((ret) => {
     dadosUsuario = ret.usuario;
@@ -44,25 +46,30 @@ router.post("/", async (req, res) => {
     dadosCompra = ret.tipoCompra;
   });
 
-  // console.log('dadosInscricao',dadosInscricao)
-  // console.log('dadosCompra',dadosCompra)
-  // return;
+  let valorPix = params.forEach((ret) => {
+    dadosValorPix = ret.valorPix;
+  });
+
+//   console.log('dadosInscricao',dadosInscricao)
+//   console.log('dadosCompra',dadosCompra)
+//   console.log('dadosValorPix',dadosValorPix)
+//   return;
 
   const options = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${environment.pagSeguroSandBox.token}`,
+      Authorization: `Bearer ${environment.pagSeguroProd.token}`,
     },
   };
 
-  let dataAtual = new Date().setMinutes(new Date().getMinutes() + 6, 0, 0);
+  let dataAtual = new Date().setMinutes(new Date().getMinutes() + 1, 0, 0);
   let dataFormatada = toIsoString(new Date(dataAtual));
   // console.log('dataF>',data);
   // console.log('dataAtual>',data);
 
-  bodyPix = BodyCompraPixData.BODY_PIX_HOM(
+  bodyPix = BodyCompraPixData.BODY_PIX_PRD(
     dadosUsuario,
-    dadosInscricao,
+    dadosValorPix,
     dadosInscricao[0].codigo_referencia,
     dataFormatada
   );
@@ -70,9 +77,9 @@ router.post("/", async (req, res) => {
 
   //GERANDO PIX
   axios
-    .post(`${environment.pagSeguroSandBox.ApiPix}`, bodyPix, options)
+    .post(`${environment.pagSeguroProd.gerarPagamentoPix}`, bodyPix, options)
     .catch(async ({ response }) => {
-      //   console.log('RESPONSE1>',response);
+      console.log('RESPONSE1>',response);
       //   console.log('RESPONSE2>',response.data);
       // console.log(response.headers);
       // console.log(response.status);
@@ -80,7 +87,7 @@ router.post("/", async (req, res) => {
 
     })
     .then(async function (response) {
-      // console.log('response>>',response);
+      console.log('response>>',response);
       if (response) {
         let resp = response.data;
         resp.status_compra = "99";
@@ -149,13 +156,13 @@ router.post("/", async (req, res) => {
       //         if (!status) res.send(error).status(404);
       //         else res.send(status).status(200);
 
-      let log_result = await logsSysEventos(
-        99,
-        response.status,
-        dadosUsuario,
-        dadosInscricao,
-        'pix'
-      );
+    //   let log_result = await logsSysEventos(
+    //     99,
+    //     response.status,
+    //     dadosUsuario,
+    //     dadosInscricao,
+    //     'pix'
+    //   );
 
       //     })
       //     .catch(function (error) {
@@ -168,16 +175,15 @@ router.post("/validar-pix", async (req, res) => {
   const options = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${environment.pagSeguroSandBox.token}`,
+      Authorization: `Bearer ${environment.pagSeguroProd.token}`,
     },
   };
 
   let params = req.body;
   console.log("RESPONSE1>", params);
   axios
-    .post(
-      `${environment.pagSeguroSandBox.ApixValidarPagamentoPix}${params.codigo}`,
-      undefined,
+    .get(
+      `${environment.pagSeguroProd.consultarPagamentoPix}/${params.codigo}`,
       options
     )
     .catch(async ({ response }) => {
@@ -185,7 +191,7 @@ router.post("/validar-pix", async (req, res) => {
       console.log("RESPONSE2>", response.data);
       let resp = response.data;
 
-      let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao);
+    //   let log_result = await logsSysEventos(response.data, response.status, 'dadosUsuario', 'dadosInscricao');
 
       // console.log(response.headers);
       // console.log(response.status);
@@ -194,14 +200,49 @@ router.post("/validar-pix", async (req, res) => {
     .then(function (response) {
       let retorno = response ? response : null;
       console.log("response>>", response);
+      let charges = response.data.charges ? response.data.charges : null
+      if (charges !== null) {
+        if (charges[0].status === 'PAID') {
+        //Compra Aprovada
+            resp = {
+                status_compra: "99",
+                data: charges,
+            };
+            resp !== undefined || ''
+                ? res.send(resp).status(200)
+                : res.send("").status(400);
 
-      resp = {
-        status_compra: "99",
-        data: retorno === undefined ? response.data : "",
-      };
-      resp !== undefined
-        ? res.send(resp).status(200)
-        : res.send("").status(400);
+        } else {
+
+            resp = {
+                status_compra: "99",
+                data: 'Pendente',
+            };
+            resp !== undefined || ''
+                ? res.send(resp).status(200)
+                : res.send("").status(400);
+        }
+    }
+    else {
+
+        //Verificar data de expiração em 1 - 15m
+        let expiration_date =  response.data ? response.data.qr_codes[0].expiration_date: '';
+        console.log('expiration_date>>>',expiration_date)
+        let dataAtual = new Date().getTime()
+        let dataExpiracao = new Date(expiration_date).getTime()
+        let compare = dataAtual > dataExpiracao
+        let ret = response? response.data : null
+        resp = {
+            status_compra: "Pendente",
+            data: ret,
+            expirado: compare
+        };
+        resp !== undefined || ''
+            ? res.send(resp).status(200)
+            : res.send("").status(400);
+    }
+
+      
     });
 });
 

@@ -184,7 +184,7 @@ router.post("/:id", async (req, res) => {
     // console.log(body);
     const updates = {
       $set: { 
-        qr_validado: true, 
+        qr_validado: 'Sim', 
         data_validacao: body.data 
       }
     }

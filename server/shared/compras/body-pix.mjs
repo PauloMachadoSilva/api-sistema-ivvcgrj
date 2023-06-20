@@ -54,55 +54,57 @@ export class BodyCompraPixData {
     return xml
   }
 
-  static PIX_PRD(dadosUsuario,token,referencia,dadosCartao) {
+  static BODY_PIX_PRD(dadosUsuario,dadosValorPix,referencia,data) {
 
     let payment = {
-        "reference_id": '123456',
-        "customer": {
-            "name": "Jose da Silva",
-            "email": "email@test.com",
-            "tax_id": "12345678909",
-            "phones": [
+        reference_id: referencia,
+        customer: {
+            name:  dadosUsuario.nome,
+            email: dadosUsuario.email,
+            tax_id: "12345678909",
+            phones: [
                 {
-                    "country": "55",
-                    "area": "11",
-                    "number": "999999999",
-                    "type": "MOBILE"
+                    country: "55",
+                    area: String(dadosUsuario.telefone).slice(0,2),
+                    number: String(dadosUsuario.telefone).slice(2,11),
+                    type: "MOBILE"
                 }
             ]
         },
-        "items": [
+        items: [
             {
-                "name": "nome do item",
-                "quantity": 1,
-                "unit_amount": 500
+                name: "NFC/2023 - Ingressos",
+                quantity: 1,
+                unit_amount: dadosValorPix
             }
         ],
-        "qr_codes": [
+        qr_codes: [
             {
-                "amount": {
-                    "value": 500
+                amount: {
+                    value: dadosValorPix
                 },
-                "expiration_date": "2023-06-13T20:40:35-03:00"
+                expiration_date: data
+                // expiration_date: '2023-06-14T09:58:00.000'
             }
         ],
-        "shipping": {
-            "address": {
-                "street": "Avenida Brigadeiro Faria Lima",
-                "number": "1384",
-                "complement": "apto 12",
-                "locality": "Pinheiros",
-                "city": "São Paulo",
-                "region_code": "SP",
-                "country": "BRA",
-                "postal_code": "01452002"
+        shipping: {
+            address: {
+                street: "R. Alfredo de Morais",
+                number: "685",
+                complement: "Campo Grande",
+                locality: "Campo Grande",
+                city: "Rio de Janeiro",
+                region_code: "RJ",
+                country: "BRA",
+                postal_code: "23080100"
             }
         },
-        "notification_urls": [
-            "https://meusite.com/notificacoes"
+        notification_urls: [
+            "https://api.verbocompogranderj.com.br/sys-eventos-notificacoes"
         ]
     };
-    let xml = json2xml({payment})
+    let xml = payment
+    // console.log(xml);
     return xml
   }
   dataVencimentoPix(params) {
