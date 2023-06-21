@@ -6,9 +6,11 @@ import { environment } from "../environments/environment.mjs";
 
 const router = express.Router();
 var obj;
-//Recuperar Parcelas
+//RECUPERAR NOTIFICAÇÕES
 router.post("/", async (req, res) => {
     console.log('req>>>',req)
+    console.log('res>>>',res)
+    return;
     let notificacao = String(req.params.notificationCode);
     const options = {
         headers: {accept: 'application/xml'}
