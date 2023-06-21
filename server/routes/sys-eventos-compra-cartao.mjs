@@ -125,7 +125,7 @@ router.post("/", async (req, res) => {
           header
         )
         .catch(async ({ response }) => {
-          console.log("RESPONSE>", response);
+          // console.log("RESPONSE>", response);
           // console.log(response.headers);
           // console.log(response.status);
           if (response.status !== 200) {
