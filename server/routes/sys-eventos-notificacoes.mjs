@@ -14,10 +14,10 @@ var codigoReferencia;
 
 router.use(express.urlencoded({ extended: false }));
 router.post("/", async (req, res) => {
-  // console.log('req>>>',req)
-  // console.log('res>>>',res)
-  // console.log('req>>>',req)
-  // console.log("body>>>", req.body.notificationCode); // status 4 ou 3
+  console.log('req>>>',req)
+  console.log('res>>>',res)
+  console.log('req>>>',req)
+  console.log("body>>>", req.body.notificationCode); // status 4 ou 3
   // return;
   // let notificacao = String(req.body.notificationCode);
   let notificacao = String(req.body ? req.body.notificationCode : '');
