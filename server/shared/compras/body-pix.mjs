@@ -100,7 +100,7 @@ export class BodyCompraPixData {
             }
         },
         notification_urls: [
-            "https://api.verbocompogranderj.com.br/sys-eventos-notificacoes"
+            "https://api.verbocampogranderj.com.br/sys-eventos-notificacoes"
         ]
     };
     let xml = payment
