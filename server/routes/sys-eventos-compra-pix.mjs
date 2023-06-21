@@ -166,15 +166,16 @@ router.post("/validar-pix", async (req, res) => {
           let bd = await AtualizarCompra(response.data.id);
 
           //ENVIAR EMAIL DE APROVAÇÃO
-          let dadosEmail = {
-            email: response.data.customer.email,
-            subject: "Compra aprovada!",
-            texto: "Ingressos",
-          };
+          //Desabilitado por enquanto, enviando email na API de notificação
+        //   let dadosEmail = {
+        //     email: response.data.customer.email,
+        //     subject: "Compra aprovada!",
+        //     texto: "Ingressos",
+        //   };
 
-          setTimeout(async () => {
-            enviarEmail(response.data.reference_id, dadosEmail);
-          }, 2000);
+        //   setTimeout(async () => {
+        //     enviarEmail(response.data.reference_id, dadosEmail);
+        //   }, 2000);
         } else {
           resp = {
             status_compra: "99",
