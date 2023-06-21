@@ -244,7 +244,7 @@ async function IncluirCompra(dadosInscricao, status, code) {
 }
 
 async function AtualizarCompra(codigo) {
-  console.log("codigo>>>", codigo);
+//   console.log("codigo>>>", codigo);
   const query = { codigo_transacao: codigo };
   const updates = {
     $set: { status_compra: "3" },
@@ -252,7 +252,7 @@ async function AtualizarCompra(codigo) {
 
   let collection = await db.collection("sys-eventos-inscritos");
   let result = await collection.updateMany(query, updates);
-  console.log("Result>>>", result);
+//   console.log("Result>>>", result);
 }
 
 export default router;
