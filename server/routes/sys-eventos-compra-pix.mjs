@@ -110,7 +110,7 @@ router.post("/", async (req, res) => {
           response.status,
           dadosUsuario,
           dadosInscricao,
-          "pix"
+          "pix-pendente"
         );
       }
     });
@@ -146,7 +146,7 @@ router.post("/validar-pix", async (req, res) => {
         response.status,
         response.data.customer,
         response.data.items,
-        "pix"
+        "pix-aprovado-tela"
       );
       let retorno = response ? response : null;
     //   console.log("response>>", response.data);

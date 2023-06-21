@@ -17,10 +17,10 @@ router.post("/", async (req, res) => {
   // console.log('req>>>',req)
   // console.log('res>>>',res)
   // console.log('req>>>',req)
-  console.log("body>>>", req.body.notificationCode); // status 4 ou 3
+  // console.log("body>>>", req.body.notificationCode); // status 4 ou 3
   // return;
   // let notificacao = String(req.body.notificationCode);
-  let notificacao = String(req.body.notificationCode);
+  let notificacao = String(req.body ? req.body.notificationCode : '');
   const options = {
     headers: { accept: "application/xml" },
   };
@@ -80,14 +80,14 @@ router.post("/", async (req, res) => {
     })
     .catch(async function (error) {
       let log_result = await logsSysEventos(
-        response.data,
-        response.status,
+        'erro ao consultar notificação',
+        400,
         emailUsuario,
         codigoReferencia,
-        "pix"
+        "pix-notificacao"
       );
 
-      resp = {
+      let resp = {
         status_compra: "7",
       };
       res.status(400).send(resp);
