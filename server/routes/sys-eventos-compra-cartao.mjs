@@ -91,8 +91,12 @@ router.post("/", async (req, res) => {
       }
     })
     .then(async function (response) {
-      let tokenCartao = response.data.token;
-      // console.log('tokenCartao>',tokenCartao);
+      
+      let tokenXml = convert2.convertXML(response.data);
+      let tokenCartao = tokenXml.card.children[0].token.content;
+
+      // console.log('tokenCartao>',tokenCartao.card.children[0].token.content);
+      // console.log('response>',response);
       // console.log('dadosInscricao[0]',dadosInscricao[0].codigo_referencia);
       let log_result = await logsSysEventos(tokenCartao, 200, dadosUsuario, dadosInscricao, 'cartao');
 
@@ -121,7 +125,7 @@ router.post("/", async (req, res) => {
           header
         )
         .catch(async ({ response }) => {
-          // console.log("RESPONSE>", response);
+          console.log("RESPONSE>", response);
           // console.log(response.headers);
           // console.log(response.status);
           if (response.status !== 200) {
