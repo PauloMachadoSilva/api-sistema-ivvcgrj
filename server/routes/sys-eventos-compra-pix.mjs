@@ -146,7 +146,7 @@ router.post("/validar-pix", async (req, res) => {
         response.status,
         response.data.customer,
         response.data.items,
-        "pix-aprovado-tela"
+        "pix-em-espera"
       );
       let retorno = response ? response : null;
     //   console.log("response>>", response.data);
@@ -163,7 +163,7 @@ router.post("/validar-pix", async (req, res) => {
             : res.send("").status(400);
 
           //ATUALIZANDO COMPRA APROVADA
-          let bd = await AtualizarCompra(response.data.id);
+          let bd = await AtualizarCompra(response.data.id, response.data.customer);
 
           //ENVIAR EMAIL DE APROVAÇÃO
           //Desabilitado por enquanto, enviando email na API de notificação
@@ -244,7 +244,7 @@ async function IncluirCompra(dadosInscricao, status, code) {
   });
 }
 
-async function AtualizarCompra(codigo) {
+async function AtualizarCompra(codigo, usuario) {
 //   console.log("codigo>>>", codigo);
   const query = { codigo_transacao: codigo };
   const updates = {
@@ -253,6 +253,14 @@ async function AtualizarCompra(codigo) {
 
   let collection = await db.collection("sys-eventos-inscritos");
   let result = await collection.updateMany(query, updates);
+
+  let log_result = await logsSysEventos(
+    result,
+    3,
+    usuario,
+    codigo,
+    "pix-aprovado-tela"
+  );
 //   console.log("Result>>>", result);
 }
 
