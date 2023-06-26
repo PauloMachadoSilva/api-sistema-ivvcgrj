@@ -93,6 +93,7 @@ router.post("/", async (req, res) => {
     .then(async function (response) {
       
       let tokenXml = convert2.convertXML(response.data);
+      console.log('tokenXml',tokenXml)
       let tokenCartao = tokenXml.card.children[0].token.content;
 
       // console.log('tokenCartao>',tokenCartao.card.children[0].token.content);
