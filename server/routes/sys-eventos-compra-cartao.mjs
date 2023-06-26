@@ -67,7 +67,7 @@ router.post("/", async (req, res) => {
       urlencoded
     )
     .catch(async ({ response }) => {
-      console.log('RESPONSE>',response);
+      // console.log('RESPONSE>',response);
       // console.log(response.headers);
       // console.log(response.status);
       if (response.status !== 200) {
@@ -93,7 +93,7 @@ router.post("/", async (req, res) => {
     .then(async function (response) {
       
       let tokenXml = convert2.convertXML(response.data);
-      console.log('tokenXml',response.status)
+      // console.log('tokenXml',response.status)
       let tokenCartao = tokenXml.card ? tokenXml.card.children[0].token.content : '';
 
       // console.log('tokenCartao>',tokenCartao.card.children[0].token.content);
