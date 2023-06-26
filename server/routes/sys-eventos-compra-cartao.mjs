@@ -93,7 +93,7 @@ router.post("/", async (req, res) => {
     .then(async function (response) {
       
       let tokenXml = convert2.convertXML(response.data);
-      console.log('tokenXml',response.data)
+      console.log('tokenXml',response.status)
       let tokenCartao = tokenXml.card.children[0].token.content;
 
       // console.log('tokenCartao>',tokenCartao.card.children[0].token.content);
@@ -145,7 +145,7 @@ router.post("/", async (req, res) => {
               dadosUsuario,
               dadosEmail
             );
-            console.log("RESPONSE status>", response);
+            // console.log("RESPONSE status>", response);
             let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao');
             res.send(retStatus).status(200);
           }
