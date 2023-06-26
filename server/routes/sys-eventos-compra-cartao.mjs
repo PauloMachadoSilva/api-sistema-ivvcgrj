@@ -145,6 +145,7 @@ router.post("/", async (req, res) => {
               dadosUsuario,
               dadosEmail
             );
+            console.log("RESPONSE status>", response);
             let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao');
             res.send(retStatus).status(200);
           }
