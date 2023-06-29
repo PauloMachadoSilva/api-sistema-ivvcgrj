@@ -19,12 +19,11 @@ export class BodyCreditCardData {
             sessionId:sessao,
             amount:data.amount,
             cardNumber: data.cardNumber,
-            cardBrand:'visa',
+            cardBrand: data.cardBrand,
             cardExpirationMonth: data.cardExpirationMonth,
             cardExpirationYear: data.cardExpirationYear,
             cardCvv: data.cardCvv
             }
-        
         return data;
     }
 }

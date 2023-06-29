@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
   //Retorna Session
   const sessao = await CriarSessao();
 
-  // console.log('sessao->',sessao)
+  // console.log('dadosCartao->',dadosCartao)
 
   bodyCartaoCredito = BodyCreditCardData.BODY_CARTAO_CREDITO_PRD(
     dadosCartao,
@@ -86,7 +86,7 @@ router.post("/", async (req, res) => {
           dadosUsuario,
           dadosEmail
         );
-        let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao');
+        let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, `cartao - ${dadosCartao.cardBrand}`);
         res.send(retStatus).status(200);
       }
     })
@@ -99,7 +99,7 @@ router.post("/", async (req, res) => {
       // console.log('tokenCartao>',tokenCartao.card.children[0].token.content);
       // console.log('response>',response);
       // console.log('dadosInscricao[0]',dadosInscricao[0].codigo_referencia);
-      let log_result = await logsSysEventos(tokenCartao, 200, dadosUsuario, dadosInscricao, 'cartao');
+      let log_result = await logsSysEventos(tokenCartao, 200, dadosUsuario, dadosInscricao, `cartao - ${dadosCartao.cardBrand}`);
 
       //Homologação
       // console.log('dadosCartao>>>',dadosCartao);
@@ -146,7 +146,7 @@ router.post("/", async (req, res) => {
               dadosEmail
             );
             // console.log("RESPONSE status>", response);
-            let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao');
+            let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, `cartao - ${dadosCartao.cardBrand}`);
             res.send(retStatus).status(200);
           }
         })
@@ -164,19 +164,22 @@ router.post("/", async (req, res) => {
           // console.log('Status Pedido->',code)
           // console.log('response->',response)
 
-          let log_result = await logsSysEventos(code, Number(status), dadosUsuario, dadosInscricao, 'cartao');
+          let log_result = await logsSysEventos(code, Number(status), dadosUsuario, dadosInscricao, `cartao - ${dadosCartao.cardBrand}`);
 
           //Consultar Notificação
-          await consutarNotificacaoCompra(code);
+          
+          setTimeout(async () => {
+            await consutarNotificacaoCompra(code);
+          }, 2000);  
 
         })
         .catch(async function (error) {
           console.log(error);
-          let log_result = await logsSysEventos(error, 500, dadosUsuario, dadosInscricao, 'cartao');
+          let log_result = await logsSysEventos(error, 500, dadosUsuario, dadosInscricao, `cartao - ${dadosCartao.cardBrand}`);
         });
     })
     .catch(async function (error) {
-      let log_result = await logsSysEventos(error, 500, dadosUsuario, dadosInscricao, 'cartao');
+      let log_result = await logsSysEventos(error, 500, dadosUsuario, dadosInscricao, `cartao - ${dadosCartao.cardBrand}`);
       console.log(error);
     });
 
@@ -206,7 +209,7 @@ router.post("/", async (req, res) => {
                 dadosUsuario,
                 dadosEmail
               );
-              let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao');
+              let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao - consulta');
               res.send(retStatus).status(200);
           }
         })
@@ -219,12 +222,12 @@ router.post("/", async (req, res) => {
           //Futuramente implementar banco de recusas
           if (Number(status) === 3) {
             let bd = await IncluirCompra(dadosInscricao, status, code);
-            let log_result = await logsSysEventos(code, Number(status), dadosUsuario, dadosInscricao, 'cartao');
+            let log_result = await logsSysEventos(code, Number(status), dadosUsuario, dadosInscricao, 'cartao - consulta');
 
           }
           else 
           {
-            let log_result = await logsSysEventos(status, response.status, dadosUsuario, dadosInscricao, 'cartao');
+            let log_result = await logsSysEventos(status, response.status, dadosUsuario, dadosInscricao, 'cartao - consulta');
 
           }
           //ENVIAR EMAILS DE APROVAÇÃO
