@@ -44,7 +44,7 @@ router.get("/:cpf", async (req, res) => {
 router.post("/", async (req, res) => {
   let collection = await db.collection("usuarios");
   let newDocument = req.body;
-  newDocument.date = new Date();
+  newDocument.date = tratarData();
   let result = await collection.insertOne(newDocument);
   res.send(result).status(204);
 
@@ -163,5 +163,12 @@ router.delete("/:id", async (req, res) => {
 
   // res.send(result).status(200);
 });
+
+function tratarData() {
+  let dataAjustada = new Date();
+  let h = dataAjustada.getHours() -3;
+  dataAjustada.setHours(h);
+  return dataAjustada
+}
 
 export default router;

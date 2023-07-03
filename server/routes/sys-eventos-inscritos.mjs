@@ -111,7 +111,62 @@ router.get("/", async (req, res) => {
                 foreignField: "_id",
                 as: "INGRESSO",
               },
+            }            
+        ])
+        .toArray();
+    let error = {};
+  //   ingressos = {usuarios};
+  //   console.log(ingressos);
+    if (!ingressos) res.send(error).status(404);
+    else res.send(ingressos).status(200);
+  });
+
+  router.get("/ingressos", async (req, res) => {
+    let collection = await db.collection("sys-eventos-inscritos");
+    let ingressos = {};  
+      ingressos = await collection
+        .aggregate([ 
+          { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
+          {
+            $lookup: {
+              from: "sys-eventos-ingressos",
+              localField: "id2",
+              foreignField: "_id",
+              as: "INGRESSO",
             },
+          },  
+          {
+            "$unwind": "$INGRESSO"
+          },      
+          {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao'}, valor_compra_unitaria:{$sum:"$valor_compra_unitaria"}}}
+        ])
+        .toArray();
+    let error = {};
+  //   ingressos = {usuarios};
+  //   console.log(ingressos);
+    if (!ingressos) res.send(error).status(404);
+    else res.send(ingressos).status(200);
+  });
+
+  router.get("/ingressos-quantidade", async (req, res) => {
+    let collection = await db.collection("sys-eventos-inscritos");
+    let ingressos = {};  
+      ingressos = await collection
+        .aggregate([ 
+          { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
+          {
+            $lookup: {
+              from: "sys-eventos-ingressos",
+              localField: "id2",
+              foreignField: "_id",
+              as: "INGRESSO",
+            },
+          },  
+          {
+            "$unwind": "$INGRESSO"
+          },      
+          {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao'}, 
+          count:{$count:{}}}}
         ])
         .toArray();
     let error = {};
