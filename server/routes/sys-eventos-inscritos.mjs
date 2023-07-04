@@ -176,8 +176,33 @@ router.get("/", async (req, res) => {
     else res.send(ingressos).status(200);
   });
 
-
-
+  router.get("/ingressos-tipo-operacao", async (req, res) => {
+    let collection = await db.collection("sys-eventos-inscritos");
+    let ingressos = {};  
+      ingressos = await collection
+        .aggregate([ 
+          { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
+          {
+            $lookup: {
+              from: "sys-eventos-ingressos",
+              localField: "id2",
+              foreignField: "_id",
+              as: "INGRESSO",
+            },
+          },  
+          {
+            "$unwind": "$INGRESSO"
+          },      
+          {$group : {_id:{"forma_pagamento":'$forma_pagamento',"_id":"$forma_pagamento"}, 
+          count:{$count:{}}}}
+        ])
+        .toArray();
+    let error = {};
+  //   ingressos = {usuarios};
+  //   console.log(ingressos);
+    if (!ingressos) res.send(error).status(404);
+    else res.send(ingressos).status(200);
+  });
 
 //Recuperar Eventos
 router.post("/meus-eventos", async (req, res) => {
