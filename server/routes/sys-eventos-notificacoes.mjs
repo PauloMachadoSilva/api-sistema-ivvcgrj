@@ -42,17 +42,22 @@ router.post("/", async (req, res) => {
       if (Number(status) === 3 || Number(status) === 4) {
         //ATUALIZANDO COMPRA APROVADA
         let bd = await AtualizarCompra(codigo_referencia);
+        
+        let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+        let testeEmail = parse_email.test(email);
+        //Validar o email
+        if (email && testeEmail === true) {
+          //ENVIAR EMAIL DE APROVAÇÃO
+          let dadosEmail = {
+            email: email,
+            subject: "Compra aprovada!",
+            texto: "Ingressos",
+          };
 
-        //ENVIAR EMAIL DE APROVAÇÃO
-        let dadosEmail = {
-          email: email,
-          subject: "Compra aprovada!",
-          texto: "Ingressos",
-        };
-
-        setTimeout(async () => {
-          enviarEmail(codigo_referencia, dadosEmail);
-        }, 2000);
+          setTimeout(async () => {
+            enviarEmail(codigo_referencia, dadosEmail);
+          }, 2000);
+        }
 
         //GERANDO LOG
         let log_result = await logsSysEventos(

@@ -75,6 +75,10 @@ router.post("/", async (req, res) => {
           status_compra: '7',
         };
       
+    let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+    let testeEmail = parse_email.test(dadosUsuario.email);
+    //Validar o email
+    if (dadosUsuario.email && testeEmail === true) {
       //ENVIAR EMAILS DE APROVAÇÃO
       let dadosEmail = {
         email: dadosUsuario.email,
@@ -86,6 +90,7 @@ router.post("/", async (req, res) => {
           dadosUsuario,
           dadosEmail
         );
+    }
         let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, `cartao - ${dadosCartao.cardBrand}`);
         res.send(retStatus).status(200);
       }
@@ -93,8 +98,10 @@ router.post("/", async (req, res) => {
     .then(async function (response) {
       
       let tokenXml = convert2.convertXML(response.data);
-      // console.log('tokenXml',response.status)
-      let tokenCartao = tokenXml.card ? tokenXml.card.children[0].token.content : '';
+      let error = String(response.data).replace('"','');
+      let containError = error.includes('error')
+
+      let tokenCartao = tokenXml.card && !containError ? tokenXml.card.children[0].token.content : '';
 
       // console.log('tokenCartao>',tokenCartao.card.children[0].token.content);
       // console.log('response>',response);
@@ -134,17 +141,22 @@ router.post("/", async (req, res) => {
               status_compra: '7',
             };
 
-          //ENVIAR EMAIL DE NÃO APROVADO
-          let dadosEmail = {
-            email: dadosUsuario.email,
-            subject: "Compra não aprovada",
-            texto: "Ingressos",
-          };
+          let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+          let testeEmail = parse_email.test(dadosUsuario.email);
+          //Validar o email
+          if (dadosUsuario.email && testeEmail === true) {
+            //ENVIAR EMAIL DE NÃO APROVADO
+            let dadosEmail = {
+              email: dadosUsuario.email,
+              subject: "Compra não aprovada",
+              texto: "Ingressos",
+            };
 
-            enviarEmailErroCartao(
-              dadosUsuario,
-              dadosEmail
-            );
+              enviarEmailErroCartao(
+                dadosUsuario,
+                dadosEmail
+              );
+          }
             // console.log("RESPONSE status>", response);
             let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, `cartao - ${dadosCartao.cardBrand}`);
             res.send(retStatus).status(200);
@@ -199,16 +211,22 @@ router.post("/", async (req, res) => {
               status_compra: '7',
             };
 
-            let dadosEmail = {
-              email: dadosUsuario.email,
-              subject: "Compra não aprovada",
-              texto: "Ingressos",
-            };
-  
-              enviarEmailErroCartao(
-                dadosUsuario,
-                dadosEmail
-              );
+            let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+            let testeEmail = parse_email.test(dadosUsuario.email);
+            //Validar o email
+            if (dadosUsuario.email && testeEmail === true) {
+
+              let dadosEmail = {
+                email: dadosUsuario.email,
+                subject: "Compra não aprovada",
+                texto: "Ingressos",
+              };
+    
+                enviarEmailErroCartao(
+                  dadosUsuario,
+                  dadosEmail
+                );
+            }
               let log_result = await logsSysEventos(response.data, response.status, dadosUsuario, dadosInscricao, 'cartao - consulta');
               res.send(retStatus).status(200);
           }
@@ -230,23 +248,29 @@ router.post("/", async (req, res) => {
             let log_result = await logsSysEventos(status, response.status, dadosUsuario, dadosInscricao, 'cartao - consulta');
 
           }
-          //ENVIAR EMAILS DE APROVAÇÃO
-          let dadosEmail = {
-            email: dadosUsuario.email,
-            subject: Number(status) === 3 ? "Compra aprovada!" : "Compra não aprovada",
-            texto: "Ingressos",
-          };
-    
-          setTimeout(async () => {
-            if (Number(status) === 3) {
-              enviarEmail(dadosInscricao[0].codigo_referencia, dadosEmail);
-            } else {
-              enviarEmailErroCartao(
-                dadosUsuario,
-                dadosEmail
-              );
-            }
-          }, 2000);
+
+          let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+          let testeEmail = parse_email.test(dadosUsuario.email);
+          //Validar o email
+          if (dadosUsuario.email && testeEmail === true) {
+            //ENVIAR EMAILS DE APROVAÇÃO
+            let dadosEmail = {
+              email: dadosUsuario.email,
+              subject: Number(status) === 3 ? "Compra aprovada!" : "Compra não aprovada",
+              texto: "Ingressos",
+            };
+      
+            setTimeout(async () => {
+              if (Number(status) === 3) {
+                enviarEmail(dadosInscricao[0].codigo_referencia, dadosEmail);
+              } else {
+                enviarEmailErroCartao(
+                  dadosUsuario,
+                  dadosEmail
+                );
+              }
+            }, 2000);
+          }
     
           let retStatus = {
             status_compra: status,

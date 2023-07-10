@@ -165,7 +165,7 @@ router.get("/", async (req, res) => {
           {
             "$unwind": "$INGRESSO"
           },      
-          {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao'}, 
+          {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao', "data":'$INGRESSO.data'}, 
           count:{$count:{}}}}
         ])
         .toArray();

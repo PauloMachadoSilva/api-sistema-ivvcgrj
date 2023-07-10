@@ -39,15 +39,20 @@ router.post("/", async (req, res) => {
         result =  await collection.insertOne(ret);
     })    
 
-    let dadosEmail= {
-        email: dadosCompra.email,
-        subject: 'Compra aprovada!',
-        texto: 'Ingressos'
-      }
+    let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
+    let testeEmail = parse_email.test(dadosCompra.email);
+    //Validar o email
+    if (dadosCompra.email && testeEmail === true) {
+        let dadosEmail= {
+            email: dadosCompra.email,
+            subject: 'Compra aprovada!',
+            texto: 'Ingressos'
+        }
 
-    setTimeout(async () => {
-        enviarEmail(dadosInscricao[0].codigo_referencia,dadosEmail)
-      }, 2000);
+        setTimeout(async () => {
+            enviarEmail(dadosInscricao[0].codigo_referencia,dadosEmail)
+        }, 2000);
+    }
 
     result = '3'
     let error = {}

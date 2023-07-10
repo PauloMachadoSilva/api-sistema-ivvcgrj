@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
     let collection = await db.collection("sys-eventos-ingressos");
     // console.log(req);
     let query = {id_evento: String(req.body.id_evento)};
-    let result = await collection.find(query).toArray();
+    let result = await collection.find(query).sort({ valor : 1, data: 1 }).toArray();
     let error = {}
     if (!result) res.send(error).status(404);
     else res.send(result).status(200);

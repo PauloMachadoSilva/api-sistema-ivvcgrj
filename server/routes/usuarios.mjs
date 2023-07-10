@@ -103,6 +103,7 @@ router.post("/alterar-senha/:email", async (req, res) => {
 
 //Alterar cadastro
 router.post("/alterar-cadastro/:cpf", async (req, res) => {
+  // console.log(req.body)
   const query = { cpf: String(req.params.cpf) };
   const updates = {
     $set: { 
@@ -111,12 +112,12 @@ router.post("/alterar-cadastro/:cpf", async (req, res) => {
       cpf: req.body.cpf, 
       email: req.body.email, 
       telefone: req.body.telefone, 
-      departamentos: req.body.departamentos, 
-      endereco: req.body.endereco, 
-      discipulado: req.body.discipulado, 
+      // departamentos: req.body.departamentos, 
+      // endereco: req.body.endereco, 
+      // discipulado: req.body.discipulado, 
       data: req.body.data,
       nascimento: req.body.nascimento,
-      rhema : req.body.rhema,  
+      // rhema : req.body.rhema,  
       whatsapp: req.body.whatsapp,  
     }
   };
