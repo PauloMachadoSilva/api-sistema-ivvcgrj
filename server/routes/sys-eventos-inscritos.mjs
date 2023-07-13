@@ -138,7 +138,10 @@ router.get("/", async (req, res) => {
           {
             "$unwind": "$INGRESSO"
           },      
-          {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao'}, valor_compra_unitaria:{$sum:"$valor_compra_unitaria"}}}
+          {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao'}, valor_compra_unitaria:{$sum:"$valor_compra_unitaria"}}},
+          {
+            $sort:{'_id.descricao':1, '_id.titulo':1 }
+          }
         ])
         .toArray();
     let error = {};
@@ -166,7 +169,10 @@ router.get("/", async (req, res) => {
             "$unwind": "$INGRESSO"
           },      
           {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao', "data":'$INGRESSO.data'}, 
-          count:{$count:{}}}}
+          count:{$count:{}}}},
+          {
+            $sort:{'_id.descricao':1, '_id.titulo':1 }
+          }
         ])
         .toArray();
     let error = {};
@@ -193,7 +199,7 @@ router.get("/", async (req, res) => {
           {
             "$unwind": "$INGRESSO"
           },      
-          {$group : {_id:{"forma_pagamento":'$forma_pagamento',"_id":"$forma_pagamento"}, 
+          {$group : {_id:{"forma_pagamento":'$forma_pagamento',"_id":"$forma_pagamento"},valor_compra_unitaria:{$sum:"$valor_compra_unitaria"},
           count:{$count:{}}}}
         ])
         .toArray();
