@@ -137,7 +137,8 @@ router.get("/", async (req, res) => {
           },  
           {
             "$unwind": "$INGRESSO"
-          },      
+          },
+          { $match : { status_compra : '3' }},       
           {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao'}, valor_compra_unitaria:{$sum:"$valor_compra_unitaria"}}},
           {
             $sort:{'_id.descricao':1, '_id.titulo':1 }
@@ -167,7 +168,8 @@ router.get("/", async (req, res) => {
           },  
           {
             "$unwind": "$INGRESSO"
-          },      
+          },
+          { $match : { status_compra : '3' }},      
           {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao', "data":'$INGRESSO.data'}, 
           count:{$count:{}}}},
           {
@@ -198,7 +200,8 @@ router.get("/", async (req, res) => {
           },  
           {
             "$unwind": "$INGRESSO"
-          },      
+          },  
+          { $match : { status_compra : '3' }},    
           {$group : {_id:{"forma_pagamento":'$forma_pagamento',"_id":"$forma_pagamento"},valor_compra_unitaria:{$sum:"$valor_compra_unitaria"},
           count:{$count:{}}}}
         ])
