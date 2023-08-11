@@ -7,7 +7,7 @@ export class CreditCardData {
             currency:'BRL',
             extraAmount:1.00,
             itemId1:'0001',
-            itemDescription1:'Festa das Nações - Ingresso',
+            itemDescription1:'Sistema IVVCGRJ - Ingresso',
             itemAmount1:0,
             itemQuantity1:1,
             notificationURL:'https://verbocampogranderj.com.br/',
