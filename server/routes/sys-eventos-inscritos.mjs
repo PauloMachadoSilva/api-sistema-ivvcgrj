@@ -12,6 +12,7 @@ router.post("/", async (req, res) => {
   let query = { id_usuario: String(req.body.id_usuario) };
   let result = await collection.find(query).toArray();
   let id_usuario = String(req.body.id_usuario);
+  let id_evento = String(req.body.id_evento);
   let ingressos = {};
   let usuarios = {};
   // console.log(result.length > 0);
@@ -19,7 +20,7 @@ router.post("/", async (req, res) => {
   if (id_usuario != null) {
     ingressos = await collection
       .aggregate([
-        { $match : { id_usuario : id_usuario } },
+        { $match : { id_usuario : id_usuario, id_evento: id_evento } },
         { $addFields: { id: { $toObjectId: id_usuario } } },
         { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
         {
@@ -218,15 +219,11 @@ router.post("/meus-eventos", async (req, res) => {
     let collection = await db.collection("sys-eventos-inscritos");
     // console.log(req);
     let query = { id_usuario: String(req.body.id_usuario) };
-    let result = await collection.find(query).toArray();
-    let id_evento = result.length > 0 ? result[0].id_evento : null;
     let eventos = {};
-    // console.log(result.length > 0);
-  
-    if (id_evento != null) {
       eventos = await collection
         .aggregate([
-          { $addFields: { id: { $toObjectId: id_evento } } },
+          { $match : query },
+          { $addFields: { id: { "$toObjectId": "$id_evento" } } },
           {
             $lookup: {
               from: "sys-eventos",
@@ -235,13 +232,34 @@ router.post("/meus-eventos", async (req, res) => {
               as: "JOIN",
             },
           },
+          {
+            "$unwind": "$JOIN"
+          },
+          {$group : {_id:
+            {
+              "titulo":'$JOIN.titulo',
+              "_id":{ "$toObjectId": "$id_evento" },
+              "descricao":'$JOIN.descricao',
+              "data_inicial":'$JOIN.data_inicial',
+              "data_final":'$JOIN.data_final',
+              "local":'$JOIN.local',
+              "local_obs":'$JOIN.local_obs',
+              "sigla":'$JOIN.sigla',
+              "duracao":'$JOIN.duracao',
+              "ativo":'$JOIN.ativo',
+              "termino":'$JOIN.termino',
+              "image":'$JOIN.image',
+            }
+          }
+        },
+
         ])
         .toArray();
-    }
+
     let error = {};
     // console.log(eventos);
     if (!eventos) res.send(error).status(404);
-    else res.send(eventos.length > 0 ? eventos[0].JOIN : eventos).status(200);
+    else res.send(eventos.length > 0 ? eventos : eventos).status(200);
   });
 
   //Alterar Ingresso
