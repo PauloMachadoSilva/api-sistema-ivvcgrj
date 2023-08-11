@@ -19,7 +19,7 @@ export class BodyCompraPixData {
         },
         items: [
             {
-                name: "NFC/2023 - Ingressos",
+                name: "Sistema IVVCGRJ - Ingressos",
                 quantity: 1,
                 unit_amount: 500
             }
@@ -73,7 +73,7 @@ export class BodyCompraPixData {
         },
         items: [
             {
-                name: "NFC/2023 - Ingressos",
+                name: "Sistema IVVCGRJ - Ingressos",
                 quantity: 1,
                 unit_amount: dadosValorPix
             }

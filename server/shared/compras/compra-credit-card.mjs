@@ -25,7 +25,7 @@ export class CompraCreditCardData {
         items: {
             item: {
                 id:1,
-                description: 'NFC/2023 - Ingressos - R$ ' + dadosCartao.amount,
+                description: 'Sistema IVVCGRJ - Ingressos - R$ ' + dadosCartao.amount,
                 quantity: dadosCartao.parcels,
                 amount: dadosCartao.amountParcels.toFixed(2),
             }
