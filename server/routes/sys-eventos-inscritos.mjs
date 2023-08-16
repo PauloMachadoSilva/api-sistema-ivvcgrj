@@ -90,7 +90,8 @@ router.post("/inscricao", async (req, res) => {
   });
 
 //Recuperar todos os Ingressos
-router.get("/", async (req, res) => {
+router.get("/:id_evento", async (req, res) => {
+  let id_evento = String(req.params.id_evento);
     let collection = await db.collection("sys-eventos-inscritos");
     let ingressos = {};  
       ingressos = await collection
@@ -112,7 +113,9 @@ router.get("/", async (req, res) => {
                 foreignField: "_id",
                 as: "INGRESSO",
               },
-            }            
+            },
+            { $match : { id_evento : id_evento }},       
+            
         ])
         .toArray();
     let error = {};
