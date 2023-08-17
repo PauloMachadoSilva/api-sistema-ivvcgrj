@@ -18,12 +18,23 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
     let collection = await db.collection("sys-eventos-ingressos");
     // console.log(req);
-    let query = {id_evento: String(req.body.id_evento), ativo : true};
+    let query = {id_evento: String(req.body.id_evento), ativo : true, online : true};
     let result = await collection.find(query).sort({ tipo:1, valor : 1, data: 1 }).toArray();
     let error = {}
     if (!result) res.send(error).status(404);
     else res.send(result).status(200);
   });
+
+  //Recuperar Ingressos
+router.post("/presencial", async (req, res) => {
+  let collection = await db.collection("sys-eventos-ingressos");
+  // console.log(req);
+  let query = {id_evento: String(req.body.id_evento), ativo : true};
+  let result = await collection.find(query).sort({ tipo:1, valor : 1, data: 1 }).toArray();
+  let error = {}
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+});
 
 
 export default router;

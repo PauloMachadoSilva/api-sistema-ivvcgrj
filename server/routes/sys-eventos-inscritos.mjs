@@ -90,7 +90,7 @@ router.post("/inscricao", async (req, res) => {
   });
 
 //Recuperar todos os Ingressos
-router.get("/:id_evento", async (req, res) => {
+router.get("/ingressosid/:id_evento", async (req, res) => {
   let id_evento = String(req.params.id_evento);
     let collection = await db.collection("sys-eventos-inscritos");
     let ingressos = {};  
@@ -125,7 +125,8 @@ router.get("/:id_evento", async (req, res) => {
     else res.send(ingressos).status(200);
   });
 
-  router.get("/ingressos", async (req, res) => {
+  router.get("/ingressos/:id_evento", async (req, res) => {
+    let id_evento = String(req.params.id_evento);
     let collection = await db.collection("sys-eventos-inscritos");
     let ingressos = {};  
       ingressos = await collection
@@ -139,6 +140,7 @@ router.get("/:id_evento", async (req, res) => {
               as: "INGRESSO",
             },
           },  
+          { $match : { id_evento : id_evento }},  
           {
             "$unwind": "$INGRESSO"
           },
@@ -156,7 +158,8 @@ router.get("/:id_evento", async (req, res) => {
     else res.send(ingressos).status(200);
   });
 
-  router.get("/ingressos-quantidade", async (req, res) => {
+  router.get("/ingressos-quantidade/:id_evento", async (req, res) => {
+    let id_evento = String(req.params.id_evento);
     let collection = await db.collection("sys-eventos-inscritos");
     let ingressos = {};  
       ingressos = await collection
@@ -170,6 +173,7 @@ router.get("/:id_evento", async (req, res) => {
               as: "INGRESSO",
             },
           },  
+          { $match : { id_evento : id_evento }},       
           {
             "$unwind": "$INGRESSO"
           },
@@ -188,49 +192,6 @@ router.get("/:id_evento", async (req, res) => {
     else res.send(ingressos).status(200);
   });
 
-  // router.get("/ingressos-quantidade-limite/:id_evento", async (req, res) => {
-  //   let collection = await db.collection("sys-eventos-inscritos");
-  //   let id_evento = String(req.params.id_evento);
-  //   let ingressos = {};  
-  //     ingressos = await collection
-  //       .aggregate([ 
-  //         { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
-  //         {
-  //           $lookup: {
-  //             from: "sys-eventos-ingressos",
-  //             localField: "id2",
-  //             foreignField: "_id",
-  //             as: "INGRESSO",
-  //           },
-  //         },  
-  //         {
-  //           "$unwind": "$INGRESSO"
-  //         },
-  //         { $match : { status_compra : '3', id_evento: id_evento, ativo : true }},      
-  //         {$group : {_id:{
-  //           "titulo":'$INGRESSO.titulo',
-  //           "_id":{ "$toObjectId": "$id_ingresso" },
-  //           "descricao":'$INGRESSO.descricao', 
-  //           "data":'$INGRESSO.data', 
-  //           "id_evento":'$INGRESSO.id_evento', 
-  //           "ativo":'$INGRESSO.ativo', 
-  //           "observacao":'$INGRESSO.observacao', 
-  //           "tipo":'$INGRESSO.tipo', 
-  //           "valor":'$INGRESSO.valor', 
-  //           "incluso":'$INGRESSO.incluso', 
-  //           "limite":'$INGRESSO.limite'}, 
-  //         count:{$count:{}}}},
-  //         {
-  //           $sort:{'_id.descricao':1, '_id.titulo':1 }
-  //         }
-  //       ])
-  //       .toArray();
-  //   let error = {};
-  // //   ingressos = {usuarios};
-  // //   console.log(ingressos);
-  //   if (!ingressos) res.send(error).status(404);
-  //   else res.send(ingressos).status(200);
-  // });
 
   router.get("/ingressos-quantidade-limite/:id_evento", async (req, res) => {
     let id_evento = String(req.params.id_evento);
@@ -298,7 +259,8 @@ router.get("/:id_evento", async (req, res) => {
     else res.send(ingressos).status(200);
   });
 
-  router.get("/ingressos-tipo-operacao", async (req, res) => {
+  router.get("/ingressos-tipo-operacao/:id_evento", async (req, res) => {
+    let id_evento = String(req.params.id_evento);
     let collection = await db.collection("sys-eventos-inscritos");
     let ingressos = {};  
       ingressos = await collection
@@ -312,6 +274,7 @@ router.get("/:id_evento", async (req, res) => {
               as: "INGRESSO",
             },
           },  
+          { $match : { id_evento : id_evento }},   
           {
             "$unwind": "$INGRESSO"
           },  
