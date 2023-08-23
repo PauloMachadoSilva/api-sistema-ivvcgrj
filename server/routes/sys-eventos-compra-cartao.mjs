@@ -96,13 +96,22 @@ router.post("/", async (req, res) => {
       }
     })
     .then(async function (response) {
-      
-      let tokenXml = convert2.convertXML(response.data);
-      let error = String(response.data).replace('"','');
-      let containError = error.includes('error')
-
-      let tokenCartao = tokenXml.card && !containError ? tokenXml.card.children[0].token.content : '';
-
+      let tokenXml;
+      let error;
+      let containError;
+      let tokenCartao;
+      let newToken = response.data.token;
+      console.log('newToken>',newToken);
+      if (!newToken){
+        tokenXml = convert2.convertXML(response.data);
+        error = String(response.data).replace('"','');
+        containError = error.includes('error')
+        tokenCartao = tokenXml.card && !containError ? tokenXml.card.children[0].token.content : '';
+      }
+      else {
+        tokenCartao = newToken;
+      }
+   
       // console.log('tokenCartao>',tokenCartao.card.children[0].token.content);
       // console.log('response>',response);
       // console.log('dadosInscricao[0]',dadosInscricao[0].codigo_referencia);
