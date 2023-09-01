@@ -106,7 +106,7 @@ export class CompraCreditCardData {
         installmentQuantity: dadosCartao.parcels,
         installmentValue: dadosCartao.amountParcels.toFixed(2),
         noInterestInstallmentQuantity: 12,
-        creditCardHolderName: dadosUsuario.nome,
+        creditCardHolderName: dadosCartao.nameHolder ? dadosCartao.nameHolder : dadosUsuario.nome,
         creditCardHolderCPF: dadosUsuario.cpf,
         creditCardHolderBirthDate:'01/01/2001',
         creditCardHolderAreaCode:'21',
@@ -120,6 +120,7 @@ export class CompraCreditCardData {
         billingAddressState:'RJ',
         billingAddressCountry:'BRA'
     }
+    // console.log('CARD->', card)
     return qs.stringify(card)
   }
 }
