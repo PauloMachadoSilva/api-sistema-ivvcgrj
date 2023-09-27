@@ -416,4 +416,38 @@ router.post("/:id", async (req, res) => {
     res.send(result).status(200);
   });
 
+  //Confirmar presença
+  router.post("/confirmar-presenca/:id", async (req, res) => {
+    // const query = { _id: ObjectId(req.params.id) };
+    let body = req.body;
+    // console.log(query);
+    // console.log(body);
+    const document = {
+      
+        id_inscricao: req.params.id,
+        qr_validado: 'Sim', 
+        data_validacao: body.data 
+    }
+  
+    // console.log(document);
+    // console.log(updates);
+    let collection = await db.collection("sys-eventos-inscritos-presenca");
+    let result = await collection.insertOne(document);
+
+  
+    res.send(result).status(200);
+  });
+
+  router.get("/consultar-presenca/:id", async (req, res) => {
+    let id_evento = String(req.params.id_evento);
+    let collection = await db.collection("sys-eventos-inscritos-presenca");
+    let results = await collection.find({})
+    // .limit(50)
+    .toArray();
+
+    res.send(results).status(200);
+
+  });
+
+
 export default router;
