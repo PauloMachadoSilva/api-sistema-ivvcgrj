@@ -8,7 +8,7 @@ const router = express.Router();
 //Consulta um Evento
 router.get("/", async (req, res) => {
   let collection = await db.collection("sys-eventos");
-  let results = await collection.find({}).toArray();
+  let results = await collection.find({}).sort({'ativo':-1, 'data_inicial':-1}).toArray();
   res.send(results).status(200);
 });
 
