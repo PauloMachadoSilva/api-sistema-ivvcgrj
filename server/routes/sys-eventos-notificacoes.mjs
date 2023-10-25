@@ -131,6 +131,7 @@ async function AtualizarIngressoPromocional(codigo){
     };
   //Pesquisando inscricao
   let find =  await collectionInscricao.findOne(queryInscritos);
+  console.log("find", find); 
   if (find.id_promocional) {
     const query = { email: find.email, _id: ObjectId(find.id_promocional) };
     //Atualizando Promocional
