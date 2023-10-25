@@ -101,7 +101,7 @@ router.post("/", async (req, res) => {
 });
 
 async function AtualizarCompra(codigo) {
-  //   console.log("codigo>>>", codigo);
+  console.log("AtualizarCompra", codigo);
   const query = { codigo_referencia: codigo };
   const updates = {
     $set: { status_compra: "3" },
@@ -115,6 +115,7 @@ async function AtualizarCompra(codigo) {
 }
 
 async function AtualizarIngressoPromocional(codigo){
+  console.log("AtualizarIngressoPromocional - inicio", codigo);
   let collection = await db.collection("sys-eventos-ingressos-promocionais");
   let collectionInscricao = await db.collection("sys-eventos-inscritos");
   // console.log(usuario)
@@ -133,7 +134,9 @@ async function AtualizarIngressoPromocional(codigo){
     const query = { email: find.email, _id: ObjectId(find.id_promocional) };
     //Atualizando Promocional
     let result = await collection.updateOne(query, updates); 
-  }       
+  }
+  console.log("AtualizarIngressoPromocional - final");
+       
 }
 
 function tratarData() {
