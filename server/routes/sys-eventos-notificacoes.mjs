@@ -36,7 +36,8 @@ router.post("/", async (req, res) => {
       codigoReferencia = codigo_referencia;
       let email = ret["elements"][0].elements[17].elements[1].elements[0].text; // Status: 4 (Disponivel na conta) | 3 (Pago)
       emailUsuario = email;
-      console.log("status>", codigo_referencia);
+      console.log("codigo_referencia>", codigo_referencia);
+      console.log("status>", status);
       console.log("email>", email);
       // return;
 
@@ -55,7 +56,7 @@ router.post("/", async (req, res) => {
             texto: "Ingressos",
           };
 
-          console.log("enviado email!")
+          console.log("enviado email!");
 
           setTimeout(async () => {
             enviarEmail(codigo_referencia, dadosEmail);
