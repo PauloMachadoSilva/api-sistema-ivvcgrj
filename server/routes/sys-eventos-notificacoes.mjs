@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
             texto: "Ingressos",
           };
 
-          console.log('enviado email!')
+          console.log("enviado email!")
 
           setTimeout(async () => {
             enviarEmail(codigo_referencia, dadosEmail);
