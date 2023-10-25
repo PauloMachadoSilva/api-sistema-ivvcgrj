@@ -113,7 +113,9 @@ async function AtualizarCompra(codigo) {
   let collection = await db.collection("sys-eventos-inscritos");
   let result = await collection.updateMany(query, updates);
   // console.log("Result>>>", result);
-  let promo = await AtualizarIngressoPromocional(codigo);
+  if (codigo !== undefined || "") {
+    let promo = await AtualizarIngressoPromocional(codigo);
+  }
 
 }
 
