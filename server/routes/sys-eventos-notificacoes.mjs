@@ -5,6 +5,8 @@ import { environment } from "../environments/environment.mjs";
 import logsSysEventos from "../logs/logs-sys-eventos.mjs";
 import enviarEmail from "../emails/index.mjs";
 import db from "../db/conn.mjs";
+import { ObjectId } from "mongodb";
+
 
 const router = express.Router();
 var obj;
