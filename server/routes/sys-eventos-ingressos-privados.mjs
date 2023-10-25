@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
 
   router.post("/privado-ingresso", async (req, res) => {
     let collection = await db.collection("sys-eventos-ingressos-promocionais");
-    let query = { id_ingresso: String(req.body.id_ingresso) };
+    let query = { _id: ObjectId(req.body.id_promocional) };
     console.log(req.body.id_ingresso);
 
     let eventos = {};

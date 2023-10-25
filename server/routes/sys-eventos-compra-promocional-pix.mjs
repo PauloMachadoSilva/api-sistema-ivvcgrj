@@ -9,6 +9,7 @@ import qs, { stringify } from "qs";
 import enviarEmail from "../emails/index.mjs";
 import enviarEmailErroCartao from "../emails/email-erro-cartao.mjs";
 import logsSysEventos from "../logs/logs-sys-eventos.mjs";
+import { ObjectId } from "mongodb";
 
 const router = express.Router();
 var tokenCartao;
@@ -102,7 +103,7 @@ router.post("/", async (req, res) => {
         resp.status_compra = "99";
         res.send(resp).status(200);
         //GERANDO COMPRA PENDENTE
-        let bd = await IncluirCompra(dadosInscricao, "1", response.data.id, dadosUsuario);
+        let bd = await IncluirCompra(dadosInscricao, "1", response.data.id);
 
         //GERANDO LOG
         let log_result = await logsSysEventos(
@@ -233,17 +234,18 @@ function toIsoString(date) {
   );
 }
 
-async function IncluirCompra(dadosInscricao, status, code, usuario) {
+async function IncluirCompra(dadosInscricao, status, code) {
   let collection = await db.collection("sys-eventos-inscritos");
   // console.log('dadosInscricao->',dadosInscricao);
   let asinscricoes = dadosInscricao.forEach(async (ret) => {
     // console.log('ret->>>',ret)
     ret.status_compra = status;
     ret.codigo_transacao = code;
+    ret.id_promocional = 
     await collection.insertOne(ret);
   });
   //Teste
-//   let promo = await AtualizarIngressoPromocional(usuario);
+// let promo = await AtualizarIngressoPromocional('abc123');
 
 }
 
@@ -266,13 +268,15 @@ async function AtualizarCompra(codigo, usuario) {
   );
 //   console.log("Result>>>", result);
 //Atualizando Ingresso Promocional
-let promo = await AtualizarIngressoPromocional(usuario);
+let promo = await AtualizarIngressoPromocional(codigo);
 }
 
-async function AtualizarIngressoPromocional(usuario){
+async function AtualizarIngressoPromocional(codigo){
     let collection = await db.collection("sys-eventos-ingressos-promocionais");
-    console.log(usuario)
-    const query = { email: usuario.email };
+    let collectionInscricao = await db.collection("sys-eventos-inscritos");
+    // console.log(usuario)
+    // const query = { email: usuario.email };
+    const queryInscritos = { codigo_referencia: codigo };
     const updates = {
         $set: {
           data_validado: tratarData(),
@@ -280,6 +284,10 @@ async function AtualizarIngressoPromocional(usuario){
           ativo: false
         },
       };
+    //Pesquisando inscricao
+    let find =  await collectionInscricao.findOne(queryInscritos);
+    const query = { email: find.email, _id: ObjectId(find.id_promocional) };
+    //Atualizando Promocional
     let result = await collection.updateOne(query, updates);        
 }
 

@@ -302,7 +302,6 @@ async function IncluirCompra(dadosInscricao, status, code, usuario){
       //Atualizar Ingresso Promocional
       let promo = await AtualizarIngressoPromocional(usuario);
 
-
   })    
 }
 
