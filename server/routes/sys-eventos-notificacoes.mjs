@@ -47,6 +47,7 @@ router.post("/", async (req, res) => {
         
         let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
         let testeEmail = parse_email.test(email);
+        console.log("testeEmail:", testeEmail);
         //Validar o email
         if (email && testeEmail === true) {
           //ENVIAR EMAIL DE APROVAÇÃO
