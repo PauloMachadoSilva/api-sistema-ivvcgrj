@@ -108,6 +108,7 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         ])
         .toArray();
     }
+    console.log('ingressos:', ingressos);
     return ingressos;
   // }
 }
