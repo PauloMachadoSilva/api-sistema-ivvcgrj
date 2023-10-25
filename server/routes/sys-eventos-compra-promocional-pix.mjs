@@ -276,7 +276,7 @@ async function AtualizarIngressoPromocional(codigo){
     let collectionInscricao = await db.collection("sys-eventos-inscritos");
     // console.log(usuario)
     // const query = { email: usuario.email };
-    const queryInscritos = { codigo_referencia: codigo };
+    const queryInscritos = { codigo_transacao: codigo };
     const updates = {
         $set: {
           data_validado: tratarData(),
