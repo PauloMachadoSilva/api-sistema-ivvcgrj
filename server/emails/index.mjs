@@ -79,24 +79,24 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
     let query = { codigo_referencia: String(codigo_referencia) };
     let result = await collection.find(query).toArray();
     let id_evento = result.length > 0 ? result[0].id_evento : null;
-    let id_usuario = result.length > 0 ? result[0].id_usuario : null;
+    // let id_usuario = result.length > 0 ? result[0].id_usuario : null;
     let ingressos = {};
 
     if (id_usuario != null) {
       ingressos = await collection
         .aggregate([
-          { $match: { id_usuario: id_usuario } },
+          // { $match: { id_usuario: id_usuario } },
           { $match: { codigo_referencia: codigo_referencia } },
-          { $addFields: { id: { $toObjectId: id_usuario } } },
+          // { $addFields: { id: { $toObjectId: id_usuario } } },
           { $addFields: { id2: { $toObjectId: "$id_ingresso" } } },
-          {
-            $lookup: {
-              from: "usuarios",
-              localField: "id",
-              foreignField: "_id",
-              as: "USUARIO",
-            },
-          },
+          // {
+          //   $lookup: {
+          //     from: "usuarios",
+          //     localField: "id",
+          //     foreignField: "_id",
+          //     as: "USUARIO",
+          //   },
+          // },
           {
             $lookup: {
               from: "sys-eventos-ingressos",
