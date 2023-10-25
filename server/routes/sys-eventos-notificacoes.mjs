@@ -106,5 +106,36 @@ async function AtualizarCompra(codigo) {
   let collection = await db.collection("sys-eventos-inscritos");
   let result = await collection.updateMany(query, updates);
   // console.log("Result>>>", result);
+  let promo = await AtualizarIngressoPromocional(codigo);
+
+}
+
+async function AtualizarIngressoPromocional(codigo){
+  let collection = await db.collection("sys-eventos-ingressos-promocionais");
+  let collectionInscricao = await db.collection("sys-eventos-inscritos");
+  // console.log(usuario)
+  // const query = { email: usuario.email };
+  const queryInscritos = { codigo_referencia: codigo };
+  const updates = {
+      $set: {
+        data_validado: tratarData(),
+        validado: true,
+        ativo: false
+      },
+    };
+  //Pesquisando inscricao
+  let find =  await collectionInscricao.findOne(queryInscritos);
+  if (find.id_promocional) {
+    const query = { email: find.email, _id: ObjectId(find.id_promocional) };
+    //Atualizando Promocional
+    let result = await collection.updateOne(query, updates); 
+  }       
+}
+
+function tratarData() {
+  let dataAjustada = new Date();
+  let h = dataAjustada.getHours() -3;
+  dataAjustada.setHours(h);
+  return dataAjustada
 }
 export default router;
