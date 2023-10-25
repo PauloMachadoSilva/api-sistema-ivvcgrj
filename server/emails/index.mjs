@@ -82,7 +82,7 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
     // let id_usuario = result.length > 0 ? result[0].id_usuario : null;
     let ingressos = {};
 
-    if (id_usuario != null) {
+    // if (id_usuario != null) {
       ingressos = await collection
         .aggregate([
           // { $match: { id_usuario: id_usuario } },
@@ -109,5 +109,5 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         .toArray();
     }
     return ingressos;
-  }
+  // }
 }
