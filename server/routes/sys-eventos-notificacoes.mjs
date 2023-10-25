@@ -137,6 +137,7 @@ async function AtualizarIngressoPromocional(codigo){
   if (find.id_promocional) {
     const query = { email: find.email, _id: ObjectId(find.id_promocional) };
     //Atualizando Promocional
+    console.log("query", query);
     let result = await collection.updateOne(query, updates); 
   }
   console.log("AtualizarIngressoPromocional - final");
