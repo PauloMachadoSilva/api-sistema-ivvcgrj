@@ -18,6 +18,7 @@ import sysEventosIngressosPrivados from "./routes/sys-eventos-ingressos-privados
 import sysEventosInscritos from "./routes/sys-eventos-inscritos.mjs";
 import sysEventosParcelas from "./routes/sys-eventos-parcelas.mjs";
 import sysEventosCompraCartao from "./routes/sys-eventos-compra-cartao.mjs";
+import sysEventosCompraGratuita from "./routes/sys-eventos-compra-gratuita.mjs";
 import sysEventosCompraPromocionalCartao from "./routes/sys-eventos-compra-promocional-cartao.mjs";
 import sysEventosCompraPix from "./routes/sys-eventos-compra-pix.mjs";
 import sysEventosCompraPromocionalPix from "./routes/sys-eventos-compra-promocional-pix.mjs";
@@ -58,6 +59,7 @@ app.use("/sys-eventos-inscritos", sysEventosInscritos );
 app.use("/sys-eventos-parcelas", sysEventosParcelas);
 app.use("/sys-eventos-compra-cartao", sysEventosCompraCartao);
 app.use("/sys-eventos-compra-promocional-cartao", sysEventosCompraPromocionalCartao);
+app.use("/sys-eventos-compra-gratuita", sysEventosCompraGratuita);
 app.use("/sys-eventos-compra-pix", sysEventosCompraPix);
 app.use("/sys-eventos-compra-promocional-pix", sysEventosCompraPromocionalPix);
 app.use("/sys-eventos-compra-cartao-presencial", sysEventosCompraCartaoPresencial);

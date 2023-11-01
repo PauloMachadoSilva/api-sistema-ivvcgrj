@@ -71,7 +71,6 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
       html: htmlTemplates(dadosInscricao, qrcodes), // html/template
       attachDataUrls: true,
     });
-    console.log('Email>', enviarEmail);
   }
 
   async function recuperarDados(codigo_referencia) {
@@ -108,7 +107,6 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         ])
         .toArray();
     // }
-    console.log('ingressos:', ingressos);
     return ingressos;
   }
 }

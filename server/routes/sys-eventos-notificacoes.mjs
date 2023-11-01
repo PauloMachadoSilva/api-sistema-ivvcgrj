@@ -16,7 +16,7 @@ var codigoReferencia;
 
 router.use(express.urlencoded({ extended: false }));
 router.post("/", async (req, res) => {
-  console.log("body>>>", req.body.notificationCode); // status 4 ou 3
+  // console.log("body>>>", req.body.notificationCode); // status 4 ou 3
   // return;
   // let notificacao = String(req.body.notificationCode);
   let notificacao = String(req.body ? req.body.notificationCode : '');
@@ -38,9 +38,6 @@ router.post("/", async (req, res) => {
       codigoReferencia = codigo_referencia;
       let email = ret["elements"][0].elements[17].elements[1].elements[0].text; // Status: 4 (Disponivel na conta) | 3 (Pago)
       emailUsuario = email;
-      console.log("codigo_referencia>", codigo_referencia);
-      console.log("status>", status);
-      console.log("email>", email);
       // return;
 
       if (Number(status) === 3 || Number(status) === 4) {
@@ -49,7 +46,7 @@ router.post("/", async (req, res) => {
         
         let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
         let testeEmail = parse_email.test(email);
-        console.log("testeEmail:", testeEmail);
+        // console.log("testeEmail:", testeEmail);
         //Validar o email
         if (email && testeEmail === true) {
           //ENVIAR EMAIL DE APROVAÇÃO
@@ -58,8 +55,6 @@ router.post("/", async (req, res) => {
             subject: "Compra aprovada!",
             texto: "Ingressos",
           };
-
-          console.log("enviado email!");
 
           setTimeout(async () => {
             enviarEmail(codigo_referencia, dadosEmail);
@@ -104,7 +99,6 @@ router.post("/", async (req, res) => {
 });
 
 async function AtualizarCompra(codigo) {
-  console.log("AtualizarCompra", codigo);
   const query = { codigo_referencia: codigo };
   const updates = {
     $set: { status_compra: "3" },
@@ -120,7 +114,6 @@ async function AtualizarCompra(codigo) {
 }
 
 async function AtualizarIngressoPromocional(codigo){
-  console.log("AtualizarIngressoPromocional - inicio", codigo);
   let collection = await db.collection("sys-eventos-ingressos-promocionais");
   let collectionInscricao = await db.collection("sys-eventos-inscritos");
   // console.log(usuario)
@@ -135,15 +128,12 @@ async function AtualizarIngressoPromocional(codigo){
     };
   //Pesquisando inscricao
   let find =  await collectionInscricao.findOne(queryInscritos);
-  console.log("find", find); 
   if (find.id_promocional) {
     const query = { email: find.email, _id: ObjectId(find.id_promocional) };
     //Atualizando Promocional
-    console.log("query", query);
+    // console.log("query", query);
     let result = await collection.updateOne(query, updates); 
-  }
-  console.log("AtualizarIngressoPromocional - final");
-       
+  }       
 }
 
 function tratarData() {
