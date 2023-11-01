@@ -36,7 +36,8 @@ router.post("/", async (req, res) => {
     let asinscricoes = dadosInscricao.forEach(async (ret)=>{
         ret.status_compra = '3';
         result =  await collection.insertOne(ret);
-        let promo = await AtualizarIngressoPromocional(usuario);
+        // console.log('usuario->',dadosUsuario);
+        // let promo = await AtualizarIngressoPromocional(usuario);
 
     })    
 
