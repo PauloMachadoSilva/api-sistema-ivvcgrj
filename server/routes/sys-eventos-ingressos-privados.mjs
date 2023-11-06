@@ -124,6 +124,7 @@ router.post("/", async (req, res) => {
               "termino":'$JOIN.termino',
               "image":'$JOIN.image',
               "valor":'$valor',
+              "tipo_ingresso_promocional":'$tipo',
             }
           }
         },
