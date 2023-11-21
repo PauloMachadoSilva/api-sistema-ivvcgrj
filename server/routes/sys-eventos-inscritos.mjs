@@ -553,5 +553,21 @@ router.post("/:id", async (req, res) => {
 
   });
 
+  router.get("/consultar-por-cpf/:cpf", async (req, res) => {
+    let cpf = String(req.params.cpf);
+    let query = { documento: String(cpf), plataforma: 'presencial'};
+    // console.log('query',query)
+    let collection = await db.collection("sys-eventos-inscritos");
+    let result = await collection.find(query).sort({data_compra: -1}).toArray();
+    if (result.length > 0) {
+    res.send(result).status(200);
+    }
+    else {
+      let query = { documento: String(cpf)};
+      let result = await collection.find(query).sort({data_compra: -1}).toArray();
+      res.send(result).status(200);
+    }
+  });
+
 
 export default router;
