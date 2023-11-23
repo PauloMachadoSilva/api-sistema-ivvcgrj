@@ -317,7 +317,7 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
           {
             "$unwind": "$INGRESSO"
           },
-          { $match : { status_compra : '3', id_promocional:id_promocional }},      
+          { $match : { status_compra : '3' }},      
           {$group : {_id:{"titulo":'$INGRESSO.titulo',"_id":{ "$toObjectId": "$id_ingresso" },"descricao":'$INGRESSO.descricao', "data":'$INGRESSO.data'}, 
           count:{$count:{}}}},
           {
