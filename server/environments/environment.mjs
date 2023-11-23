@@ -20,7 +20,6 @@ export const environment = {
         cartaoTesteCVV:'123',
         ApiPix: 'https://sandbox.api.pagseguro.com/orders',
         ApixValidarPagamentoPix: 'https://sandbox.api.pagseguro.com/pix/pay/'
-       none: ''
     },
     pagSeguroProd: {
         // contaEmail: 'pauloems@yahoo.com.br',
@@ -36,6 +35,5 @@ export const environment = {
         consultarPagamentoPix: 'https://api.pagseguro.com/orders', //GET
         gerarPagamentoPix: 'https://api.pagseguro.com/orders', //POST
         consultarNotificacoes: 'https://ws.pagseguro.uol.com.br/v2/transactions/notifications', //POST
-        none: ''
     }
 }
