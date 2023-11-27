@@ -26,6 +26,10 @@ import sysEventosCompraCartaoPresencial from "./routes/sys-eventos-compra-cartao
 import sysEventosNotificacoes from "./routes/sys-eventos-notificacoes.mjs";
 import sysEventosDuvidas from "./routes/sys-eventos-duvidas.mjs";
 
+import secoes from "./routes/secoes.mjs";
+import produtos from "./routes/produtos.mjs";
+import pedidos from "./routes/pedidos.mjs";
+
 const PORT = process.env.PORT || 5050;
 const app = express();
 
@@ -69,6 +73,14 @@ app.use("/sys-eventos-duvidas", sysEventosDuvidas);
 
 //Email
 app.use("/email", email);
+
+
+// secoes
+app.use("/secoes", secoes);
+// produtos
+app.use("/produtos", produtos);
+// pedidos
+app.use("/pedidos", pedidos);
 
 
 // Global error handling
