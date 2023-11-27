@@ -11,6 +11,6 @@ try {
   console.error(e);
 }
 
-let db = conn.db("ivvcgrj");
+let db = conn.db("devio-food");
 
 export default db;
