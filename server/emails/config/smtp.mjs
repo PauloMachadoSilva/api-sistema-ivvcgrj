@@ -3,6 +3,6 @@
     port: 587,
     secure: false, // true for 465, false for other ports
     user: 'sistemas.ivvcgrj@gmail.com', // generated ethereal user
-    pass: 'qsheatoqbfuqoejx', // generated ethereal password
+    pass: 'wfix csuz ptrs xqjr', // generated ethereal password
     email: 'sistemas.ivvcgrj@gmail.com'
  }
