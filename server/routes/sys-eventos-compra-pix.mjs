@@ -25,6 +25,7 @@ router.post("/", async (req, res) => {
   let params = req.body;
   let dadosUsuario;
   let dadosInscricao;
+  let dadosResponsaveis;
   let dadosPix;
   let dadosCompra;
   let dadosValorPix;
@@ -35,6 +36,10 @@ router.post("/", async (req, res) => {
 
   let inscricao = params.forEach((ret) => {
     dadosInscricao = ret.inscricao;
+  });
+
+  let responsaveis = params.forEach((ret) => {
+    dadosResponsaveis = ret.dadosResponsaveis;
   });
 
   // let cartao = params.forEach((ret)=>{
@@ -102,7 +107,7 @@ router.post("/", async (req, res) => {
         resp.status_compra = "99";
         res.send(resp).status(200);
         //GERANDO COMPRA PENDENTE
-        let bd = await IncluirCompra(dadosInscricao, "1", response.data.id);
+        let bd = await IncluirCompra(dadosInscricao, dadosResponsaveis, "1", response.data.id);
 
         //GERANDO LOG
         let log_result = await logsSysEventos(
@@ -233,13 +238,17 @@ function toIsoString(date) {
   );
 }
 
-async function IncluirCompra(dadosInscricao, status, code) {
+async function IncluirCompra(dadosInscricao, dadosResponsaveis, status, code) {
   let collection = await db.collection("sys-eventos-inscritos");
   // console.log('dadosInscricao->',dadosInscricao);
+  let dadosResp = dadosResponsaveis ? dadosResponsaveis : null
   let asinscricoes = dadosInscricao.forEach(async (ret) => {
     // console.log('ret->>>',ret)
     ret.status_compra = status;
     ret.codigo_transacao = code;
+    if (dadosResp)
+      ret.dados_responsaveis = dadosResp;
+    
     await collection.insertOne(ret);
   });
 }

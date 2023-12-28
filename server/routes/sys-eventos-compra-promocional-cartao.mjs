@@ -26,6 +26,7 @@ router.post("/", async (req, res) => {
   let params = req.body;
   let dadosUsuario;
   let dadosInscricao;
+  let dadosResponsaveis;
   let dadosCartao;
 
   let usuario = params.forEach((ret) => {
@@ -35,6 +36,11 @@ router.post("/", async (req, res) => {
   let inscricao = params.forEach((ret) => {
     dadosInscricao = ret.inscricao;
   });
+
+  let responsaveis = params.forEach((ret) => {
+    dadosResponsaveis = ret.dadosResponsaveis;
+  });
+
 
   let cartao = params.forEach((ret) => {
     dadosCartao = ret.dadosCartao;
@@ -248,7 +254,7 @@ router.post("/", async (req, res) => {
           //Persistir no banco
           //Futuramente implementar banco de recusas
           if (Number(status) === 3) {
-            let bd = await IncluirCompra(dadosInscricao, status, code, dadosUsuario);
+            let bd = await IncluirCompra(dadosInscricao, dadosResponsaveis, status, code, dadosUsuario);
             let log_result = await logsSysEventos(code, Number(status), dadosUsuario, dadosInscricao, 'cartao - consulta');
 
           }
@@ -291,13 +297,17 @@ router.post("/", async (req, res) => {
     }
 });
 
-async function IncluirCompra(dadosInscricao, status, code, usuario){
+async function IncluirCompra(dadosInscricao, dadosResponsaveis, status, code, usuario){
   let collection = await db.collection("sys-eventos-inscritos");
+  let dadosResp = dadosResponsaveis ? dadosResponsaveis : null
   // console.log('dadosInscricao->',dadosInscricao);
   let asinscricoes = dadosInscricao.forEach(async (ret)=>{
       // console.log('ret->>>',ret)
       ret.status_compra = status;
       ret.codigo_transacao = code.replaceAll('-','');
+      if (dadosResp)
+            ret.dados_responsaveis = dadosResp;
+
       await collection.insertOne(ret);
       //Atualizar Ingresso Promocional
       let promo = await AtualizarIngressoPromocional(usuario);
