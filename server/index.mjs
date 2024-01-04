@@ -25,6 +25,8 @@ import sysEventosCompraPromocionalPix from "./routes/sys-eventos-compra-promocio
 import sysEventosCompraCartaoPresencial from "./routes/sys-eventos-compra-cartao-presencial.mjs";
 import sysEventosNotificacoes from "./routes/sys-eventos-notificacoes.mjs";
 import sysEventosDuvidas from "./routes/sys-eventos-duvidas.mjs";
+import sysEventosCadeirasLayout from "./routes/sys-eventos-cadeiras-layout.mjs";
+import sysEventosFileirasLayout from "./routes/sys-eventos-fileiras-layout.mjs";
 
 import secoes from "./routes/secoes.mjs";
 import produtos from "./routes/produtos.mjs";
@@ -69,6 +71,8 @@ app.use("/sys-eventos-compra-promocional-pix", sysEventosCompraPromocionalPix);
 app.use("/sys-eventos-compra-cartao-presencial", sysEventosCompraCartaoPresencial);
 app.use("/sys-eventos-notificacoes", sysEventosNotificacoes);
 app.use("/sys-eventos-duvidas", sysEventosDuvidas);
+app.use("/sys-eventos-cadeiras-layout", sysEventosCadeirasLayout);
+app.use("/sys-eventos-fileiras-layout", sysEventosFileirasLayout);
 
 
 //Email
