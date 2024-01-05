@@ -6,6 +6,7 @@ import logsSysEventos from "../logs/logs-sys-eventos.mjs";
 
 
 const router = express.Router();
+var resp;
 
 //Venda Presencial
 router.post("/", async (req, res) => {
@@ -36,6 +37,15 @@ router.post("/", async (req, res) => {
     // console.log('dadosUsuario->',dadosUsuario);
     // console.log('dadosInscricao->',dadosInscricao);
     // return;
+
+        //### CADEIRAS NUMERADAS ###
+  let isValid = await validarCadeiras(dadosInscricao);
+  if(isValid){
+    resp = "77";
+    res.send(resp).status(200);
+    return;
+  }
+    
     
     let collection = await db.collection("sys-eventos-inscritos");
     let dadosResp = dadosResponsaveis ? dadosResponsaveis : null
@@ -86,4 +96,18 @@ async function AtualizarIngressoPromocional(usuario){
       };
     let result = await collection.updateOne(query, updates);        
 }
+
+async function validarCadeiras(inscricoes) {
+    let collection = await db.collection("sys-eventos-inscritos");
+    let isVendida = false;
+    let result;
+    for( const inscricao of inscricoes) {
+      let query = { id_cadeira: inscricao.cadeira ? inscricao.id_cadeira : 'n', id_evento: inscricao.id_evento, status_compra: '3'};
+      result = await collection.findOne(query);
+      if (result) {
+        isVendida = true
+      }
+    }
+    return isVendida
+   }
 export default router;

@@ -16,6 +16,7 @@ router.post("/", async (req, res) => {
     let dadosCompra;
     let dadosResponsaveis;
     let result;
+    var resp;
 
     let usuario = params.forEach((ret)=>{
         dadosUsuario = ret.usuario
@@ -36,6 +37,14 @@ router.post("/", async (req, res) => {
     // console.log('dadosUsuario->',dadosUsuario);
     // console.log('dadosInscricao->',dadosInscricao);
     // console.log('dadosResponsaveis->',dadosResponsaveis);
+
+    //### CADEIRAS NUMERADAS ###
+  let isValid = await validarCadeiras(dadosInscricao);
+  if(isValid){
+    resp = "77";
+    res.send(resp).status(200);
+    return;
+  }
     
     let collection = await db.collection("sys-eventos-inscritos");
     let dadosResp = dadosResponsaveis ? dadosResponsaveis : null
@@ -73,5 +82,17 @@ router.post("/", async (req, res) => {
     
 })
 
-
+async function validarCadeiras(inscricoes) {
+    let collection = await db.collection("sys-eventos-inscritos");
+    let isVendida = false;
+    let result;
+    for( const inscricao of inscricoes) {
+      let query = { id_cadeira: inscricao.cadeira ? inscricao.id_cadeira : 'n', id_evento: inscricao.id_evento, status_compra: '3' };
+      result = await collection.findOne(query);
+      if (result) {
+        isVendida = true
+      }
+    }
+    return isVendida
+   }
 export default router;

@@ -16,23 +16,13 @@ router.post("/", async (req, res) => {
   });
 
 
-  router.post("/responder/:id", async (req, res) => {
-    const query = { _id: ObjectId(req.params.id) };
+  router.post("/vendidas", async (req, res) => {
+    let collection = await db.collection("sys-eventos-inscritos");
     let body = req.body;
-    // console.log(query);
-    // console.log(body);
-    const updates = {
-      $set: { 
-        resolvido: tratarData()
-      }
-    }
-  
-    // console.log(query);
-    // console.log(updates);
-  
-    let collection = await db.collection("sys-eventos-cadeiras-layout");
-    let result = await collection.updateOne(query, updates);
-  
+    let query = { id_cadeira: body.id_cadeira, id_evento: body.id_event, status_compra: '3'};
+    let result = await collection.findOne(query);
+    let error = {}
+    result = result ? true : false;
     res.send(result).status(200);
   });
 
@@ -79,7 +69,8 @@ router.get("/", async (req, res) => {
               pipeline: [
                 { $match: {
                     $expr: { $and: [
-                        { $eq: [ "$id_evento", "$$id_evento" ] }
+                        { $eq: [ "$id_evento", "$$id_evento" ] },
+                        { $eq: [ "$status_compra", "3" ] }
                     ] }
                 } }
               ],

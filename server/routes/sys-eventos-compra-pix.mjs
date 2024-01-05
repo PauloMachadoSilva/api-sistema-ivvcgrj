@@ -66,6 +66,18 @@ router.post("/", async (req, res) => {
     },
   };
 
+  //### CADEIRAS NUMERADAS ###
+  let isValid = await validarCadeiras(dadosInscricao);
+  if(isValid){
+    resp = {
+      status_compra: "77",
+    };
+    res.send(resp).status(200);
+    return;
+  }
+
+ 
+
   let dataAtual = new Date().setMinutes(new Date().getMinutes() + 15, 0, 0);
   let dataFormatada = toIsoString(new Date(dataAtual));
   // console.log('dataF>',data);
@@ -248,7 +260,7 @@ async function IncluirCompra(dadosInscricao, dadosResponsaveis, status, code) {
     ret.codigo_transacao = code;
     if (dadosResp)
       ret.dados_responsaveis = dadosResp;
-    
+
     await collection.insertOne(ret);
   });
 }
@@ -272,5 +284,19 @@ async function AtualizarCompra(codigo, usuario) {
   );
 //   console.log("Result>>>", result);
 }
+
+async function validarCadeiras(inscricoes) {
+  let collection = await db.collection("sys-eventos-inscritos");
+  let isVendida = false;
+  let result;
+  for( const inscricao of inscricoes) {
+    let query = { id_cadeira: inscricao.cadeira ? inscricao.id_cadeira : 'n', id_evento: inscricao.id_evento, status_compra: '3'};
+    result = await collection.findOne(query);
+    if (result) {
+      isVendida = true
+    }
+  }
+  return isVendida
+ }
 
 export default router;

@@ -54,10 +54,12 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         <p>${dados.INGRESSO[0].titulo}</p>
         <p>${dados._id}</p>
         <p>${dados.nome}</p>
+        <p><strong>${dados.id_cadeira ? 'Cadeira: '+ dados.cadeira : '' }</strong></p>
         <img style='width:200px' src='${qr}'>
       </div>
         `;
       qrint = qrcode + qrint;
+      // console.log('qrint',qrint)
       return qrint
   }
   

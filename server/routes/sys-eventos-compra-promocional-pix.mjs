@@ -67,6 +67,16 @@ router.post("/", async (req, res) => {
     },
   };
 
+    //### CADEIRAS NUMERADAS ###
+    let isValid = await validarCadeiras(dadosInscricao);
+    if(isValid){
+     resp = {
+       status_compra: "77"
+     };
+      res.send(resp).status(200);
+      return;
+    }
+
   let dataAtual = new Date().setMinutes(new Date().getMinutes() + 15, 0, 0);
   let dataFormatada = toIsoString(new Date(dataAtual));
   // console.log('dataF>',data);
@@ -299,6 +309,20 @@ async function AtualizarIngressoPromocional(codigo){
     //Atualizando Promocional
     let result = await collection.updateOne(query, updates);        
 }
+
+async function validarCadeiras(inscricoes) {
+  let collection = await db.collection("sys-eventos-inscritos");
+  let isVendida = false;
+  let result;
+  for( const inscricao of inscricoes) {
+    let query = { id_cadeira: inscricao.cadeira ? inscricao.id_cadeira : 'n', id_evento: inscricao.id_evento, status_compra: '3'};
+    result = await collection.findOne(query);
+    if (result) {
+      isVendida = true
+    }
+  }
+  return isVendida
+ }
 
 function tratarData() {
     let dataAjustada = new Date();
