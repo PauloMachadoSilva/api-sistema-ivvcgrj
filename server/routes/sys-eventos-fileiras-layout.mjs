@@ -38,7 +38,8 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
     let collection = await db.collection("sys-eventos-fileiras-layout");
-    let results = await collection.find({})
+    let results = await collection.find({}).sort({fila: 1})
+    // let results = await collection.find({})
       // .limit(50)
       .toArray();
   

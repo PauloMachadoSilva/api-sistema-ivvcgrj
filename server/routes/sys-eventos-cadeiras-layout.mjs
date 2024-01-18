@@ -28,7 +28,8 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
     let collection = await db.collection("sys-eventos-cadeiras-layout");
-    let results = await collection.find({})
+    let results = await collection.find({}).sort({linha: 1})
+    // let results = await collection.find({})
       // .limit(50)
       .toArray();
   
@@ -78,6 +79,9 @@ router.get("/", async (req, res) => {
               foreignField: "id_cadeira",
               as: "VENDIDO",
             },
+          },
+          {
+            $sort:{'id_cadeira.linha':1, }
           }
         ])
         .toArray();
