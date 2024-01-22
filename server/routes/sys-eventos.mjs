@@ -30,4 +30,26 @@ router.get("/meus-eventos", async (req, res) => {
   res.send(results).status(200);
 });
 
+
+//Inserir Evento POST
+router.post("/incluir-evento", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  // console.log(req.body);
+  // return;
+  let query = req.body;
+  query.classificacao_etaria = {
+    idade: req.body.classificacao_etaria,
+    observacao: ''
+  }
+  query.data_inicial = new Date(query.data_inicial);
+  query.data_final = new Date(query.data_final);
+  query.limite = Number(query.limite);
+  // console.log(query);
+  // return;
+  let result = await collection.insertOne(query);
+  let error = {};
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+});
+
 export default router;
