@@ -52,4 +52,52 @@ router.post("/incluir-evento", async (req, res) => {
   else res.send(result).status(200);
 });
 
+//Consulta Evento por ID
+router.get("/:id_evento", async (req, res) => {
+  let id_evento = String(req.params.id_evento);
+  let query = { _id: ObjectId(id_evento)};
+  let collection = await db.collection("sys-eventos");
+  let results = await collection.find(query).sort().toArray();
+  res.send(results).status(200);
+});
+
+
+//Alterar Evento POST
+router.post("/atualizar-evento/:id", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  const query = { _id: ObjectId(req.params.id) };
+  const updates = {
+    $set: {
+        titulo: req.body.titulo,
+        descricao: req.body.descricao,
+        data_inicial: req.body.data_inicial,
+        data_final: req.body.data_final,
+        local: req.body.local,
+        local_obs: req.body.local_obs,
+        tipos_pagamento: req.body.tipos_pagamento,
+        image: req.body.image,
+        ativo: req.body.ativo,
+        responsaveis: req.body.responsaveis,
+        cadeiras_numeradas: req.body.cadeiras_numeradas,
+        classificacao_etaria: {
+          idade: req.body.classificacao_etaria,
+          observacao: ''
+        },
+        limite: req.body.limite,
+        sigla: req.body.sigla,
+        modal: req.body.modal,
+        modal_texto: req.body.modal_texto,
+        termino: req.body.termino,
+        duracao: req.body.duracao
+    }
+  }
+  console.log('query', query)
+  console.log('updates', updates)
+  // return;
+  let result = await collection.updateOne(query, updates);
+  let error = {};
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+});
+
 export default router;

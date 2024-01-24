@@ -81,9 +81,10 @@ router.get("/", async (req, res) => {
             },
           },
           {
-            $sort:{'id_cadeira.linha':1, }
+            $sort:{'linha':1, 'posicao':1}
           }
         ])
+        // .find({}).sort({linha: 1, posicao:1})
         .toArray();
     let error = {};
   //   ingressos = {usuarios};
