@@ -12,6 +12,23 @@ router.get("/", async (req, res) => {
   res.send(results).status(200);
 });
 
+
+//Consulta um Evento
+router.get("/eventos-ativos", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  let query = { ativo: true };
+  let results = await collection.find(query).sort({'ativo':-1, 'data_inicial':1}).toArray();
+  res.send(results).status(200);
+});
+
+//Consulta um Evento
+router.get("/eventos-inativos", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  let query = { ativo: false, exibir_home: true };
+  let results = await collection.find(query).sort({'data_inicial':-1}).toArray();
+  res.send(results).status(200);
+});
+
 //Recuperar Evento POST
 router.post("/", async (req, res) => {
   let collection = await db.collection("sys-eventos");
@@ -86,6 +103,7 @@ router.post("/atualizar-evento/:id", async (req, res) => {
         limite: req.body.limite,
         sigla: req.body.sigla,
         modal: req.body.modal,
+        exibir_home: req.body.exibir_home,
         modal_texto: req.body.modal_texto,
         termino: req.body.termino,
         duracao: req.body.duracao
