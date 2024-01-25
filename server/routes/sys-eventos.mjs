@@ -16,8 +16,8 @@ router.get("/", async (req, res) => {
 //Consulta um Evento
 router.get("/eventos-ativos", async (req, res) => {
   let collection = await db.collection("sys-eventos");
-  let query = { ativo: true };
-  let results = await collection.find(query).sort({'ativo':-1, 'data_inicial':1}).toArray();
+  let query = { ativo: true, exibir_home: true };
+  let results = await collection.find(query).sort({'data_inicial':1}).toArray();
   res.send(results).status(200);
 });
 
@@ -87,8 +87,8 @@ router.post("/atualizar-evento/:id", async (req, res) => {
     $set: {
         titulo: req.body.titulo,
         descricao: req.body.descricao,
-        data_inicial: req.body.data_inicial,
-        data_final: req.body.data_final,
+        data_inicial: new Date(req.body.data_inicial),
+        data_final:  new Date(req.body.data_final),
         local: req.body.local,
         local_obs: req.body.local_obs,
         tipos_pagamento: req.body.tipos_pagamento,
@@ -109,8 +109,8 @@ router.post("/atualizar-evento/:id", async (req, res) => {
         duracao: req.body.duracao
     }
   }
-  console.log('query', query)
-  console.log('updates', updates)
+  // console.log('query', query)
+  // console.log('updates', updates)
   // return;
   let result = await collection.updateOne(query, updates);
   let error = {};
