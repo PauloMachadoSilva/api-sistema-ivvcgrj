@@ -7,32 +7,31 @@ const router = express.Router();
 
 //Consulta um Evento
 router.get("/", async (req, res) => {
-  let collection = await db.collection("sys-eventos");
-  let query = {tipo_sistema: 'sys-eventos'};
-  let results = await collection.find(query).sort({'ativo':-1, 'data_inicial':-1}).toArray();
+  let collection = await db.collection("sys-escolas");
+  let results = await collection.find({}).sort({'ativo':-1, 'data_inicial':-1}).toArray();
   res.send(results).status(200);
 });
 
 
 //Consulta um Evento
 router.get("/eventos-ativos", async (req, res) => {
-  let collection = await db.collection("sys-eventos");
-  let query = { ativo: true, exibir_home: true, tipo_sistema: 'sys-eventos' };
+  let collection = await db.collection("sys-escolas");
+  let query = { ativo: true, exibir_home: true };
   let results = await collection.find(query).sort({'data_inicial':1}).toArray();
   res.send(results).status(200);
 });
 
 //Consulta um Evento
 router.get("/eventos-inativos", async (req, res) => {
-  let collection = await db.collection("sys-eventos");
-  let query = { ativo: false, exibir_home: true, tipo_sistema: 'sys-eventos' };
+  let collection = await db.collection("sys-escolas");
+  let query = { ativo: false, exibir_home: true };
   let results = await collection.find(query).sort({'data_inicial':-1}).toArray();
   res.send(results).status(200);
 });
 
 //Recuperar Evento POST
 router.post("/", async (req, res) => {
-  let collection = await db.collection("sys-eventos");
+  let collection = await db.collection("sys-escolas");
   // console.log(req);
   let query = { _id: ObjectId(req.body._id) };
   let result = await collection.findOne(query);
@@ -43,7 +42,7 @@ router.post("/", async (req, res) => {
 
 //Consulta um Evento do cliente
 router.get("/meus-eventos", async (req, res) => {
-  let collection = await db.collection("sys-eventos");
+  let collection = await db.collection("sys-escolas");
   let results = await collection.find({}).toArray();
   res.send(results).status(200);
 });
@@ -51,7 +50,7 @@ router.get("/meus-eventos", async (req, res) => {
 
 //Inserir Evento POST
 router.post("/incluir-evento", async (req, res) => {
-  let collection = await db.collection("sys-eventos");
+  let collection = await db.collection("sys-escolas");
   // console.log(req.body);
   // return;
   let query = req.body;
@@ -62,7 +61,6 @@ router.post("/incluir-evento", async (req, res) => {
   query.data_inicial = new Date(query.data_inicial);
   query.data_final = new Date(query.data_final);
   query.limite = Number(query.limite);
-  query.tipo_sistema = 'sys-eventos';
   // console.log(query);
   // return;
   let result = await collection.insertOne(query);
@@ -75,7 +73,7 @@ router.post("/incluir-evento", async (req, res) => {
 router.get("/:id_evento", async (req, res) => {
   let id_evento = String(req.params.id_evento);
   let query = { _id: ObjectId(id_evento)};
-  let collection = await db.collection("sys-eventos");
+  let collection = await db.collection("sys-escolas");
   let results = await collection.find(query).sort().toArray();
   res.send(results).status(200);
 });
@@ -83,7 +81,7 @@ router.get("/:id_evento", async (req, res) => {
 
 //Alterar Evento POST
 router.post("/atualizar-evento/:id", async (req, res) => {
-  let collection = await db.collection("sys-eventos");
+  let collection = await db.collection("sys-escolas");
   const query = { _id: ObjectId(req.params.id) };
   const updates = {
     $set: {

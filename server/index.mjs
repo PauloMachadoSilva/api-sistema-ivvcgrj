@@ -27,6 +27,7 @@ import sysEventosNotificacoes from "./routes/sys-eventos-notificacoes.mjs";
 import sysEventosDuvidas from "./routes/sys-eventos-duvidas.mjs";
 import sysEventosCadeirasLayout from "./routes/sys-eventos-cadeiras-layout.mjs";
 import sysEventosFileirasLayout from "./routes/sys-eventos-fileiras-layout.mjs";
+import sysEscolas from "./routes/sys-escolas.mjs";
 
 import secoes from "./routes/secoes.mjs";
 import produtos from "./routes/produtos.mjs";
@@ -55,7 +56,6 @@ app.use("/eventos", eventos );
 // Calendarios Eventos
 app.use("/calendarios-eventos", calendarioEventos );
 
-
 // Sys Eventos
 app.use("/sys-eventos", sysEventos );
 app.use("/sys-eventos-usuarios", sysEventosUsuarios );
@@ -73,6 +73,9 @@ app.use("/sys-eventos-notificacoes", sysEventosNotificacoes);
 app.use("/sys-eventos-duvidas", sysEventosDuvidas);
 app.use("/sys-eventos-cadeiras-layout", sysEventosCadeirasLayout);
 app.use("/sys-eventos-fileiras-layout", sysEventosFileirasLayout);
+
+//Escolas
+app.use("/sys-escolas", sysEscolas);
 
 
 //Email
