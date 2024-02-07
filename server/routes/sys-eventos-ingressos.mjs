@@ -186,7 +186,4 @@ router.post("/atualizar-ingressos/:id", async (req, res) => {
 async function logs(log) {
   let log_result = await logsFunctionAdm(log);
 }
-
-
-
 export default router;
