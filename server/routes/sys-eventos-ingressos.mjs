@@ -29,6 +29,16 @@ router.post("/", async (req, res) => {
 router.post("/todos", async (req, res) => {
   let collection = await db.collection("sys-eventos-ingressos");
   // console.log(req);
+  let query = {id_evento: String(req.body.id_ingresso), ativo : true, online : true};
+  let result = await collection.find(query).sort({ tipo:1, valor : 1, data: 1 }).toArray();
+  let error = {}
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+});
+
+router.post("/todos-adm", async (req, res) => {
+  let collection = await db.collection("sys-eventos-ingressos");
+  // console.log(req);
   let query = {id_evento: String(req.body.id_evento), ativo : true, online : true};
   let result = await collection.find(query).sort({ tipo:1, valor : 1, data: 1 }).toArray();
   let error = {}
