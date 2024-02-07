@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
   });
 
   //Recuperar Ingressos
-router.post("/", async (req, res) => {
+router.post("/todos", async (req, res) => {
   let collection = await db.collection("sys-eventos-ingressos");
   // console.log(req);
   let query = {id_evento: String(req.body.id_evento), ativo : true, online : true};
