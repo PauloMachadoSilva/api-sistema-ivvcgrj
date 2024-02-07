@@ -2,6 +2,8 @@ import express from "express";
 import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
 import logsFunction from "../logs/logs-functions.mjs";
+import logsFunctionAdm from "../logs/logs-functions-adm.mjs";
+
 
 const router = express.Router();
 
@@ -116,19 +118,74 @@ router.get("/ingressos-eventos", async (req, res) => {
 //Inserir Evento POST
 router.post("/incluir-ingressos", async (req, res) => {
   let collection = await db.collection("sys-eventos-ingressos");
-  // console.log(req.body);
+  // console.log(req.body.ingresso);
   // return;
-  let query = req.body;
+  let query = req.body.ingresso;
   query.data = new Date(query.data);
   query.limite = Number(query.limite);
   query.tipo_sistema = 'sys-eventos';
   // console.log(query);
   // return;
   let result = await collection.insertOne(query);
+  let log = req.body.usuario;
+  log.acao = "cadastrar-ingressos";
+  log.nome_collection = "sys-eventos-ingressos";
+  log.id_collection = result.insertedId;
+  log.metodo = "post";
+  log.campos = req.body.ingresso
+  log.tipo = 0; // 0: Não gera notificação 1: Gera notificação
+  log.data = new Date();
+  logs(log);
+  // return;
   let error = {};
   if (!result) res.send(error).status(404);
   else res.send(result).status(200);
 });
+
+//Alterar Evento POST
+router.post("/atualizar-ingressos/:id", async (req, res) => {
+  let collection = await db.collection("sys-eventos-ingressos");
+  const query = { _id: ObjectId(req.params.id) };
+  const updates = {
+    $set: {
+        titulo: req.body.ingresso.titulo,
+        descricao: req.body.ingresso.descricao,
+        data: new Date(req.body.ingresso.data),
+        id_evento: req.body.ingresso.id_evento,
+        observacao: req.body.ingresso.observacao,
+        valor: req.body.ingresso.valor,
+        tipo: 3,
+        limite: Number(req.body.ingresso.limite),
+        link_externo: req.body.ingresso.link_externo,
+        desconto_progressivo: req.body.ingresso.desconto_progressivo,
+        ativo: req.body.ingresso.ativo,
+        online: req.body.ingresso.online,
+    }
+  }
+  // console.log('query', query)
+  // console.log('updates', updates)
+  // return;
+  let result = await collection.updateOne(query, updates);
+
+  //logs
+  let log = req.body.usuario;
+  log.acao = "atualizar-ingressos";
+  log.nome_collection = "sys-eventos-ingressos";
+  log.id_collection = result;
+  log.metodo = "post";
+  log.campos = req.body.ingresso
+  log.tipo = 0; // 0: Não gera notificação 1: Gera notificação
+  log.data = new Date();
+  logs(log);
+  // return;
+  let error = {};
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+});
+
+async function logs(log) {
+  let log_result = await logsFunctionAdm(log);
+}
 
 
 
