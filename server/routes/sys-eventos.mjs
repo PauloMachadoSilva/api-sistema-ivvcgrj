@@ -15,9 +15,26 @@ router.get("/", async (req, res) => {
 
 
 //Consulta um Evento
+router.get("/escolas", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  let query = {tipo_sistema: 'sys-escolas'};
+  let results = await collection.find(query).sort({'ativo':-1, 'data_inicial':-1}).toArray();
+  res.send(results).status(200);
+});
+
+
+//Consulta um Evento
 router.get("/eventos-ativos", async (req, res) => {
   let collection = await db.collection("sys-eventos");
   let query = { ativo: true, exibir_home: true, tipo_sistema: 'sys-eventos' };
+  let results = await collection.find(query).sort({'data_inicial':1}).toArray();
+  res.send(results).status(200);
+});
+
+//Consulta um Evento
+router.get("/escolas/eventos-ativos", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  let query = { ativo: true, exibir_home: true, tipo_sistema: 'sys-escolas' };
   let results = await collection.find(query).sort({'data_inicial':1}).toArray();
   res.send(results).status(200);
 });
@@ -30,11 +47,31 @@ router.get("/eventos-inativos", async (req, res) => {
   res.send(results).status(200);
 });
 
+//Consulta um Evento
+router.get("/escolas/eventos-inativos", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  let query = { ativo: false, exibir_home: true, tipo_sistema: 'sys-escolas' };
+  let results = await collection.find(query).sort({'data_inicial':-1}).toArray();
+  res.send(results).status(200);
+});
+
+
 //Recuperar Evento POST
 router.post("/", async (req, res) => {
   let collection = await db.collection("sys-eventos");
   // console.log(req);
   let query = { _id: ObjectId(req.body._id) };
+  let result = await collection.findOne(query);
+  let error = {};
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+});
+
+//Recuperar Evento POST
+router.post("/escolas", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  // console.log(req);
+  let query = { _id: ObjectId(req.body._id),tipo_sistema: 'sys-escolas' };
   let result = await collection.findOne(query);
   let error = {};
   if (!result) res.send(error).status(404);
