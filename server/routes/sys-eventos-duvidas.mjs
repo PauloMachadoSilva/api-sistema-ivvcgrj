@@ -14,7 +14,6 @@ router.post("/", async (req, res) => {
     let newDocument = req.body;
     newDocument.date = tratarData();
     newDocument.resolvido = null;
-    newDocument.escola = newDocument.escola ? newDocument.escola : 'Home Page';
     // console.log('newDocument',newDocument)
     // return;
     let dadosEmail = {

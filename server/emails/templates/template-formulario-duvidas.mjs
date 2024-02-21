@@ -10,7 +10,7 @@ export default function htmlTemplatesFormularioDuvidas (dadosUsuario) {
             <div style='margin-top:24px'>
                 <h3>Olá Núcleo Operacional,</h3>
                 <p>Segue a dúvida enviada pelo site da Escola IVVCGRJ.</p>
-                <p>${dadosUsuario.escola ? 'Escola:' + dadosUsuario.escola : 'Home Page'}</p>
+                <p>${dadosUsuario.escola ? ('Escola:' + dadosUsuario.escola) : (' Home Page')}</p>
                 <p>Nome: ${dadosUsuario.nome}</p>
                 <p>Celular: ${dadosUsuario.celular}</p>
                 <p>Email: ${dadosUsuario.email}</p>
