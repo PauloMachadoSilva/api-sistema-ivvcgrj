@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
     // console.log('newDocument',newDocument)
     // return;
     let dadosEmail = {
-      email: 'pauloems@yahoo.com.br',
+      email: 'nucleo.operacionalcg@gmail.com',
       subject: 'Formulário de dúvidas - Escola IVVCGRJ',
       texto: 'Formulário de dúvidas - Escola IVVCGRJ'
 
