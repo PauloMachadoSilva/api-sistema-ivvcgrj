@@ -83,7 +83,7 @@ router.get("/", async (req, res) => {
     const anoF = dataAjustada.getFullYear();
     const hora = dataAjustada.getHours();
     const minutos = dataAjustada.getMinutes();
-    return diaF + '/' + mesF + '/' + anoF + ' - ' + (hora + 3) +':'+ (minutos) ;
+    return diaF + '/' + mesF + '/' + anoF + ' - ' + (hora) +':'+ (minutos) ;
   }
 
 export default router;
