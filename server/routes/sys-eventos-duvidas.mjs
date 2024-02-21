@@ -1,6 +1,8 @@
 
 import express from "express";
 import db from "../db/conn.mjs";
+import enviarEmailFormularioDuvidas from "../emails/email-formulario-duvidas.mjs";
+
 import { Int32, ObjectId } from "mongodb";
 
 
@@ -12,7 +14,19 @@ router.post("/", async (req, res) => {
     let newDocument = req.body;
     newDocument.date = tratarData();
     newDocument.resolvido = null;
+    // console.log('newDocument',newDocument)
+    // return;
+    let dadosEmail = {
+      email: 'pauloems@yahoo.com.br',
+      subject: 'Formulário de dúvidas - Escola IVVCGRJ',
+      texto: 'Formulário de dúvidas - Escola IVVCGRJ'
+
+    }
     let result = await collection.insertOne(newDocument);
+    enviarEmailFormularioDuvidas(
+      newDocument,
+      dadosEmail
+    );
     res.send(result).status(204);
   });
 
@@ -62,6 +76,14 @@ router.get("/", async (req, res) => {
     let dataAjustada = new Date();
     let h = dataAjustada.getHours() -3;
     dataAjustada.setHours(h);
-    return dataAjustada
+    const dia = dataAjustada.getDate().toString();
+    const diaF = dia.length == 1 ? '0' + dia : dia;
+    const mes = (dataAjustada.getMonth() + 1).toString(); //+1 pois no getMonth Janeiro começa com zero.
+    const mesF = mes.length == 1 ? '0' + mes : mes;
+    const anoF = dataAjustada.getFullYear();
+    const hora = dataAjustada.getHours();
+    const minutos = dataAjustada.getMinutes();
+    return diaF + '/' + mesF + '/' + anoF + ' - ' + (hora + 3) +':'+ (minutos) ;
   }
+
 export default router;
