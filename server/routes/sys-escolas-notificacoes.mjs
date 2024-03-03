@@ -118,7 +118,7 @@ async function AtualizarCompra(codigo) {
 async function AtualizarIngressoPromocional(codigo){
   let collection = await db.collection("sys-eventos-ingressos-promocionais");
   let collectionInscricao = await db.collection("sys-eventos-inscritos");
-  console.log('codigo', codigo)
+//   console.log('codigo', codigo)
   // const query = { email: usuario.email };
   const queryInscritos = { codigo_referencia: codigo };
   const updates = {
@@ -133,7 +133,7 @@ async function AtualizarIngressoPromocional(codigo){
   if (find.id_promocional) {
     const query = { email: find.email, _id: ObjectId(find.id_promocional) };
     //Atualizando Promocional
-    console.log("query", query);
+    // console.log("query", query);
     let result = await collection.updateOne(query, updates); 
   }       
 }
