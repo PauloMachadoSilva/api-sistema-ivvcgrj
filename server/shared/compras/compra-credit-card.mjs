@@ -81,7 +81,7 @@ export class CompraCreditCardData {
         currency:'BRL',
         extraAmount:'0.00',
         itemId1:'0001',
-        itemDescription1:'Sistema IVVCGRJ - Ingresso - R$ ' + dadosCartao.amountParcels.toFixed(2),
+        itemDescription1:'Sistema IVVCGRJ - Escolas - R$ ' + dadosCartao.amountParcels.toFixed(2),
         itemAmount1: dadosCartao.amountParcels.toFixed(2),
         itemQuantity1: dadosCartao.parcels,
         notificationURL:'https://verbocampogranderj.com.br/',

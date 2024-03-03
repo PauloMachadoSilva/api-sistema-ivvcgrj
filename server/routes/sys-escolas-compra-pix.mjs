@@ -9,6 +9,8 @@ import qs, { stringify } from "qs";
 import enviarEmail from "../emails/index.mjs";
 import enviarEmailErroCartao from "../emails/email-erro-cartao.mjs";
 import logsSysEventos from "../logs/logs-sys-eventos.mjs";
+import { ObjectId } from "mongodb";
+
 
 const router = express.Router();
 var tokenCartao;
@@ -282,12 +284,14 @@ async function AtualizarCompra(codigo, usuario) {
     codigo,
     "pix-aprovado-tela"
   );
-//   console.log("Result>>>", result);
-atualizarMensalidadeBase(codigo);
+// console.log("APROVADO>>>", result);
+let atualizar = await atualizarMensalidadeBase(codigo);
+
 }
 
 async function atualizarMensalidadeBase(codigo){
-  const query = { codigo_referencia: codigo };
+  // console.log('Codigo',codigo)
+  const query = { codigo_transacao: codigo };
   const updates = {
     $set: { status_compra: "0" },
   };
@@ -297,8 +301,6 @@ async function atualizarMensalidadeBase(codigo){
    let find =  await collection.findOne(query);
    if (find.id_mensalidade) {
      const query = { _id: ObjectId(find.id_mensalidade) };
-     //Atualizando Promocional
-     // console.log("query", query);
      let result = await collection.updateOne(query, updates); 
    }       
 

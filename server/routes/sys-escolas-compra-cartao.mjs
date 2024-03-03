@@ -11,6 +11,7 @@ import qs from "qs";
 import enviarEmail from "../emails/email-escolas-mensalidades.mjs";
 import enviarEmailErroCartao from "../emails/email-erro-cartao.mjs";
 import logsSysEventos from "../logs/logs-sys-eventos.mjs";
+import { ObjectId } from "mongodb";
 
 const router = express.Router();
 var tokenCartao;
@@ -267,6 +268,7 @@ router.post("/", async (req, res) => {
             let bd = await IncluirCompra(dadosInscricao, dadosResponsaveis, status, code);
             let log_result = await logsSysEventos(code, Number(status), dadosUsuario, dadosInscricao, 'cartao - consulta');
             //Atualizar Mensalidade Base
+            atualizarMensalidadeBase(dadosInscricao)
 
           }
           else 
@@ -323,18 +325,24 @@ async function IncluirCompra(dadosInscricao, dadosResponsaveis, status, code){
   })    
 }
 
-async function atualizarMensalidadeBase(dadosInscricao, dadosResponsaveis, status, code){
-    const query = { codigo_referencia: codigo };
-    const updates = {
-      $set: { status_compra: "3" },
-    };
-  
-    let collection = await db.collection("sys-eventos-inscritos");
-    let result = await collection.updateMany(query, updates);
-    // console.log("Result>>>", result);
-    if (codigo !== undefined || "") {
-      let promo = await AtualizarIngressoPromocional(codigo);
-    }
+async function atualizarMensalidadeBase(dadosInscricao){
+  const query = { codigo_referencia: dadosInscricao[0].codigo_referencia };
+  const updates = {
+    $set: { status_compra: "0" },
+  };
+  console.log("query", query);
+  console.log("updates", updates);
+
+  let collection = await db.collection("sys-eventos-inscritos");
+   //Pesquisando inscricao
+   let find =  await collection.findOne(query);
+   console.log('find>>>',find);
+   if (find.id_mensalidade) {
+     const query = { _id: ObjectId(find.id_mensalidade) };
+     //Atualizando Promocional
+     let result = await collection.updateOne(query, updates); 
+   }       
+
 }
 
 async function validarCadeiras(inscricoes) {
