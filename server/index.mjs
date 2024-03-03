@@ -27,7 +27,12 @@ import sysEventosNotificacoes from "./routes/sys-eventos-notificacoes.mjs";
 import sysEventosDuvidas from "./routes/sys-eventos-duvidas.mjs";
 import sysEventosCadeirasLayout from "./routes/sys-eventos-cadeiras-layout.mjs";
 import sysEventosFileirasLayout from "./routes/sys-eventos-fileiras-layout.mjs";
+import sysEventosPrevisaoFinanceira from "./routes/sys-eventos-previsao-financeira.mjs";
 import sysEscolas from "./routes/sys-escolas.mjs";
+import sysEscolasCompraPix from "./routes/sys-escolas-compra-pix.mjs";
+import sysEscolasCompraCartao from "./routes/sys-escolas-compra-cartao.mjs";
+import sysEscolasNotificacoes from "./routes/sys-escolas-notificacoes.mjs";
+
 
 import secoes from "./routes/secoes.mjs";
 import produtos from "./routes/produtos.mjs";
@@ -73,9 +78,15 @@ app.use("/sys-eventos-notificacoes", sysEventosNotificacoes);
 app.use("/sys-eventos-duvidas", sysEventosDuvidas);
 app.use("/sys-eventos-cadeiras-layout", sysEventosCadeirasLayout);
 app.use("/sys-eventos-fileiras-layout", sysEventosFileirasLayout);
+app.use("/sys-eventos-previsao-financeira", sysEventosPrevisaoFinanceira);
 
 //Escolas
 app.use("/sys-escolas", sysEscolas);
+app.use("/sys-escolas-compra-pix", sysEscolasCompraPix);
+app.use("/sys-escolas-compra-cartao", sysEscolasCompraCartao);
+app.use("/sys-escolas-notificacoes", sysEventosNotificacoes);
+
+
 
 
 //Email
