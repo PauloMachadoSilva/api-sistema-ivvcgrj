@@ -111,12 +111,14 @@ async function AtualizarCompra(codigo) {
     let promo = await AtualizarIngressoPromocional(codigo);
   }
 
+  let atualizar = await atualizarMensalidadeBase(codigo);
+
 }
 
 async function AtualizarIngressoPromocional(codigo){
   let collection = await db.collection("sys-eventos-ingressos-promocionais");
   let collectionInscricao = await db.collection("sys-eventos-inscritos");
-  // console.log(usuario)
+  console.log('codigo', codigo)
   // const query = { email: usuario.email };
   const queryInscritos = { codigo_referencia: codigo };
   const updates = {
@@ -131,7 +133,7 @@ async function AtualizarIngressoPromocional(codigo){
   if (find.id_promocional) {
     const query = { email: find.email, _id: ObjectId(find.id_promocional) };
     //Atualizando Promocional
-    // console.log("query", query);
+    console.log("query", query);
     let result = await collection.updateOne(query, updates); 
   }       
 }
@@ -142,4 +144,21 @@ function tratarData() {
   dataAjustada.setHours(h);
   return dataAjustada
 }
+
+async function atualizarMensalidadeBase(codigo){
+    // console.log('Codigo',codigo)
+    const query = { codigo_referencia: codigo };
+    const updates = {
+      $set: { status_compra: "0" },
+    };
+  
+    let collection = await db.collection("sys-eventos-inscritos");
+     //Pesquisando inscricao
+     let find =  await collection.findOne(query);
+     if (find.id_mensalidade) {
+       const query = { _id: ObjectId(find.id_mensalidade) };
+       let result = await collection.updateOne(query, updates); 
+     }       
+  
+  }
 export default router;
