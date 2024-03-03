@@ -3,7 +3,7 @@ import axios from "axios";
 import convert from "xml-js";
 import { environment } from "../environments/environment.mjs";
 import logsSysEventos from "../logs/logs-sys-eventos.mjs";
-import enviarEmail from "../emails/index.mjs";
+import enviarEmail from "../emails/email-escolas-mensalidades.mjs";
 import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
 
