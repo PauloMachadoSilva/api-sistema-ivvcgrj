@@ -52,6 +52,159 @@ router.post("/", async (req, res) => {
   else res.send(ingressos).status(200);
 });
 
+router.post("/todos/", async (req, res) => {
+    let dados;
+    let collection = await db.collection("sys-eventos-inscritos");
+    // console.log(req);
+    let query = { id_usuario: String(req.body.id_usuario) };
+    let result = await collection.find(query).toArray();
+    let id_usuario = String(req.body.id_usuario);
+    let ingressos = {};
+    let usuarios = {};
+    // console.log(result.length > 0);
+  
+    if (id_usuario != null) {
+      ingressos = await collection
+        .aggregate([
+          { $match : { id_usuario : id_usuario }},
+          { $addFields: { id3: { "$toObjectId": "$id_evento" } } },
+          { $addFields: { id_usuario: { "$toObjectId": id_usuario } } },
+          { $addFields: { id1: id_usuario } },
+            {
+                $lookup: {
+                  from: "sys-eventos",
+                  let: {
+                    id_usuario: id_usuario,
+                    id_evento: "$id_evento"
+                  },
+                  pipeline: [
+                    { $match: {
+                        $expr: { $and: [
+                            { $eq: [ "$tipo_sistema", "sys-escolas" ] },
+                            // { $eq: [ "$status_compra", "3" ] }
+                        ] }
+                    } }
+                  ],
+                  localField: "id3",
+                  foreignField: "_id",
+                  as: "EVENTOS",
+                },
+                $lookup: {
+                  from: "sys-eventos",
+                  let: {
+                    id_usuario: id_usuario,
+                    id_evento: "$id_evento"
+                  },
+                  pipeline: [
+                    { $match: {
+                        $expr: { $and: [
+                            { $eq: [ "$tipo_sistema", "sys-escolas" ] },
+                            // { $eq: [ "$status_compra", "3" ] }
+                        ] }
+                    } }
+                  ],
+                  localField: "id3",
+                  foreignField: "_id",
+                  as: "EVENTOS",
+                },
+              },
+              {
+                $lookup: {
+                  from: "usuarios",
+                  localField: "id_usuario",
+                  foreignField: "_id",
+                  as: "USUARIO",
+                },
+              },
+              {
+                $lookup: {
+                  from: "sys-eventos-inscritos",
+                  let: {
+                    id_evento: "$id_evento"
+                  },
+                  pipeline: [
+                    { $match: {
+                        $expr: { $and: [
+                            { $eq: [ "$id_evento", "$$id_evento" ] },
+                            // { $eq: [ "$status_compra", "3" ] }
+                        ] }
+                    } }
+                  ],
+                  localField: "id1",
+                  foreignField: "id_usuario",
+                  as: "INSCRICAO",
+                },
+              },
+            {
+              $sort:{'_id':1}
+            }
+        ])
+        .toArray();
+    }
+    let error = {};
+  //   ingressos = {usuarios};
+  //   console.log(ingressos);
+  for( const ingresso of ingressos) {
+    dados = {
+        EVENTOS: ingresso.EVENTOS,
+        USUARIO: ingresso.USUARIO,
+        INSCRICAO: ingresso.INSCRICAO,
+        id_inscricao : ingresso._id}
+  }
+    if (!ingressos) res.send(error).status(404);
+    else res.send(dados).status(200);
+  });
+
+//   router.post("/todos/", async (req, res) => {
+//     let collection = await db.collection("sys-eventos");
+//     // console.log(req);
+//     let query = { id_usuario: String(req.body.id_usuario) };
+//     let result = await collection.find(query).toArray();
+//     let id_usuario = String(req.body.id_usuario);
+//     let ingressos = {};
+//     let usuarios = {};
+//     // console.log(result.length > 0);
+  
+//     if (id_usuario != null) {
+//       ingressos = await collection
+//         .aggregate([
+//           { $match : { tipo_sistema : "sys-escolas" }},
+//           { $addFields: { id3: { "$toObjectId": "$id_evento" } } },
+//           { $addFields: { id1: id_usuario  } },
+//             {
+//                 $lookup: {
+//                   from: "sys-eventos-inscritos",
+//                   let: {
+//                     id_usuario: id_usuario,
+//                     id_evento: "$id_evento"
+//                   },
+//                   pipeline: [
+//                     { $match: {
+//                         $expr: { $and: [
+//                             { $eq: [ "$id_usuario", "6438463d0080a2488aac202f" ] },
+//                             { $eq: [ "$id_evento", "65c79f892691373baa6490e8" ] },
+//                             // { $eq: [ "$status_compra", "3" ] }
+//                         ] }
+//                     } }
+//                   ],
+//                   localField: "id1",
+//                   foreignField: "id_usuario",
+//                   as: "INSCRITOS",
+//                 },
+//               },
+//             {
+//               $sort:{'_id':1}
+//             }
+//         ])
+//         .toArray();
+//     }
+//     let error = {};
+//   //   ingressos = {usuarios};
+//   //   console.log(ingressos);
+//     if (!ingressos) res.send(error).status(404);
+//     else res.send(ingressos).status(200);
+//   });
+
 
 //Recuperar Ingressos por ID
 router.post("/inscricao", async (req, res) => {
@@ -131,22 +284,74 @@ router.post("/inscricao", async (req, res) => {
   });
 
 //Recuperar todos os Ingressos
+router.get("/ingressosusuario/:id_evento", async (req, res) => {
+    let id_evento = String(req.params.id_evento);
+      let collection = await db.collection("sys-eventos-inscritos");
+      let ingressos = {};  
+        ingressos = await collection
+          .aggregate([
+            { $addFields: { id: { "$toObjectId": "$id_usuario" } } },
+            { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
+            {
+              $lookup: {
+                from: "usuarios",
+                localField: "id",
+                foreignField: "_id",
+                as: "USUARIO",
+              },
+            },
+            {
+                $lookup: {
+                  from: "sys-eventos-ingressos",
+                  localField: "id2",
+                  foreignField: "_id",
+                  as: "INGRESSO",
+                },
+              },
+              { $match : { id_evento : id_evento, status_compra : '3' }},       
+              
+          ])
+          .toArray();
+      let error = {};
+    //   ingressos = {usuarios};
+    //   console.log(ingressos);
+      if (!ingressos) res.send(error).status(404);
+      else res.send(ingressos).status(200);
+    });
+
+  //Recuperar todos os Ingressos
 router.get("/ingressosid/:id_evento", async (req, res) => {
   let id_evento = String(req.params.id_evento);
-    let collection = await db.collection("sys-eventos-inscritos");
+  let dados;
+  let arr = [];
+    let collection = await db.collection("usuarios");
     let ingressos = {};  
       ingressos = await collection
         .aggregate([
-          { $addFields: { id: { "$toObjectId": "$id_usuario" } } },
+          { $addFields: { id: { "$toString": "$_id" } } },
           { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
           {
             $lookup: {
-              from: "usuarios",
+              from: "sys-eventos-inscritos",
+              let: {
+                id_evento: id_evento
+              },
+              pipeline: [
+                { $match: {
+                    $expr: { $and: [
+                        { $eq: [ "$status_compra", "3" ] },
+                        { $eq: [ "$id_evento", "$$id_evento" ] }
+                    ] }
+                } }
+              ],
               localField: "id",
-              foreignField: "_id",
-              as: "USUARIO",
+              foreignField: "id_usuario",
+              as: "INSCRITOS",
             },
           },
+          {
+            $sort:{'INSCRITOS.data_compra':1,}
+        }, 
           {
               $lookup: {
                 from: "sys-eventos-ingressos",
@@ -154,16 +359,19 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
                 foreignField: "_id",
                 as: "INGRESSO",
               },
-            },
-            { $match : { id_evento : id_evento, status_compra : '3' }},       
-            
+            }         
         ])
         .toArray();
     let error = {};
-  //   ingressos = {usuarios};
-  //   console.log(ingressos);
+
+  for( const ingresso of ingressos) {
+    if (ingresso.INSCRITOS.length > 0) {
+        arr.push(ingresso)
+        }
+  }
+  console.log('arr', arr)
     if (!ingressos) res.send(error).status(404);
-    else res.send(ingressos).status(200);
+    else res.send(arr).status(200);
   });
 
   router.get("/ingressos-todos/ingressosid/:id_evento", async (req, res) => {
@@ -445,6 +653,14 @@ router.post("/meus-eventos", async (req, res) => {
           {
             $lookup: {
               from: "sys-eventos",
+              pipeline: [
+                { $match: {
+                    $expr: { $and: [
+                        { $eq: [ "$tipo_sistema", "sys-escolas" ] },
+                        // { $eq: [ "$status_compra", "3" ] }
+                    ] }
+                } }
+              ],
               localField: "id",
               foreignField: "_id",
               as: "JOIN",
@@ -527,11 +743,16 @@ router.post("/:id", async (req, res) => {
   router.post("/confirmar-presenca/:id", async (req, res) => {
     // const query = { _id: ObjectId(req.params.id) };
     let body = req.body;
-    // console.log(query);
+    // console.log(req);
     // console.log(body);
     const document = {
       
         id_inscricao: req.params.id,
+        id_usuario: body.id_usuario,
+        id_evento: body.id_evento,
+        id_ingresso: body.id_ingresso,
+        titulo: body.titulo,
+        nome: body.nome,
         qr_validado: 'Sim', 
         data_validacao: body.data 
     }

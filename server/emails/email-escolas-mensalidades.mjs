@@ -55,7 +55,19 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         <p>${dados._id}</p>
         <p>${dados.nome}</p>
         <p><strong>${dados.id_cadeira ? 'Cadeira: '+ dados.cadeira : '' }</strong></p>
-        <img style='width:200px' src='${qr}'>
+        <div style="position: relative;padding: 16px;background-color: #e6e6e6;color: #000;border: 1px dashed;">
+        <div style="display: flex;justify-content: space-between;">
+        <span> Mês:</span><span><strong style="text-transform: uppercase;">${dados.INGRESSO[0].data_compra}</strong></span></div>
+        <div style="display: flex;justify-content: space-between;">
+        <span> Valor:</span><span><strong>R$ ${dados.INGRESSO[0].valor_compra_unitaria}</strong></span></div>
+        <div style="display: flex;justify-content: space-between;">
+        <span> Status:</span><span><strong>${dados.INGRESSO[0].status_compra}</strong></span></div>
+        <div style="display: flex;justify-content: space-between;">
+        <span> Vencimento:</span><span><strong>${dados.INGRESSO[0].data_compra}</strong></span></div>
+        <div style="display: flex;justify-content: space-between;">
+        <span> Forma de pagamento:</span><span><strong>${dados.INGRESSO[0].forma_pagamento}</strong></span></div>
+        </div>
+        <div style="display: flex;justify-content: center;border: 1px dashed;"><img src="https://s3.amazonaws.com/escolas.verbocampogranderj.com.br/assets/imgs/credit-card-check.png"/></div>
       </div>
         `;
       qrint = qrcode + qrint;
