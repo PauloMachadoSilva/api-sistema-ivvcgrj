@@ -56,16 +56,16 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         <p>${dados.nome}</p>
         <p><strong>${dados.id_cadeira ? 'Cadeira: '+ dados.cadeira : '' }</strong></p>
         <div style="position: relative;padding: 16px;background-color: #e6e6e6;color: #000;border: 1px dashed;">
+        <div style="display:flex; justify-content: space-between;">
+        <span> Mensalidade:</span><span><strong style="text-transform: uppercase;"> ${new Date(new Date().setMonth(new Date().getMonth()+1)).toLocaleDateString('pt-br', {month: ('long')})}</strong></span></div>
         <div style="display: flex;justify-content: space-between;">
-        <span> Mês:</span><span><strong style="text-transform: uppercase;">${new Date().toLocaleDateString('pt-br', {month: ('long')})}</strong></span></div>
+        <span> Valor:</span><span><strong>${Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(String(dados.valor_compra_unitaria))}</strong></span></div>
         <div style="display: flex;justify-content: space-between;">
-        <span> Valor:</span><span><strong>R$ ${Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(String(dados.valor_compra_unitaria))}</strong></span></div>
+        <span> Data de Pagamento:</span><span><strong> ${new Date().toLocaleDateString('pt-br')}</strong></span></div>
         <div style="display: flex;justify-content: space-between;">
-        <span> Forma de Pagamento:</span><span><strong>${dados.forma_pagamento}</strong></span></div>
-        <div style="display: flex;justify-content: space-between;">
-        <span> Data de Pagamento:</span><span><strong>${new Date().toLocaleDateString('pt-br')}</strong></span></div>
+        <span> Forma de Pagamento:</span><span><strong> ${dados.forma_pagamento}</strong></span></div>
         </div>
-        <div style="margin 0 auto;text-align: center;border: 1px dashed;"><img src="https://s3.amazonaws.com/escolas.verbocampogranderj.com.br/assets/imgs/credit-card-check.png"/></div>
+        <div style="text-align:center;border: 1px dashed;"><img src="https://s3.amazonaws.com/escolas.verbocampogranderj.com.br/assets/imgs/credit-card-check.png"/></div>
       </div>
         `;
       qrint = qrcode + qrint;
