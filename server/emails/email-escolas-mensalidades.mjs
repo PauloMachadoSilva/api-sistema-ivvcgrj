@@ -64,6 +64,8 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         <span> Data de Pagamento:</span><span><strong> ${new Date().toLocaleDateString('pt-br')}</strong></span></div>
         <div style="display: flex;justify-content: space-between;">
         <span> Forma de Pagamento:</span><span><strong> ${dados.forma_pagamento}</strong></span></div>
+        <div style="display: flex;justify-content: space-between;">
+        <span> Status:</span><span><strong> Pago</strong></span></div>
         </div>
         <div style="text-align:center;border: 1px dashed;"><img src="https://s3.amazonaws.com/escolas.verbocampogranderj.com.br/assets/imgs/credit-card-check.png"/></div>
       </div>
