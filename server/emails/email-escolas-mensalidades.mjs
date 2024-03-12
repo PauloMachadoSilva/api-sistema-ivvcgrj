@@ -56,8 +56,8 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         <p>${dados.nome}</p>
         <p><strong>${dados.id_cadeira ? 'Cadeira: '+ dados.cadeira : '' }</strong></p>
         <div style="position: relative;padding: 16px;background-color: #e6e6e6;color: #000;border: 2px dashed;">
-        <div style="display:flex; justify-content: space-between;">
-        <span> Mensalidade: </span><span><strong style="text-transform: uppercase;"> ${new Date(new Date().setMonth(new Date().getMonth()+1)).toLocaleDateString('pt-br', {month: ('long')})}</strong></span></div>
+        <div style="display:flex; text-align:center;">
+        <span style="display:flex; text-align:center;"> Mensalidade</span></div>
         <div style="display: flex;justify-content: space-between;">
         <span> Valor: </span><span><strong>${Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(String(dados.valor_compra_unitaria))}</strong></span></div>
         <div style="display: flex;justify-content: space-between;">
@@ -72,6 +72,8 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
         `;
       qrint = qrcode + qrint;
       // console.log('qrint',qrint)
+      // <span> Mensalidade: </span><span><strong style="text-transform: uppercase;"> ${new Date(new Date().setMonth(new Date().getMonth()+1)).toLocaleDateString('pt-br', {month: ('long')})}</strong></span></div>
+
       return qrint
   }
   
