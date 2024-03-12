@@ -543,9 +543,13 @@ router.post("/:id", async (req, res) => {
   });
 
   router.get("/consultar-presenca/:id", async (req, res) => {
-    let id_evento = String(req.params.id_evento);
+    let id_evento = String(req.params.id);
+    let query = {
+      id_evento: id_evento
+    }
+    // console.log(query)
     let collection = await db.collection("sys-eventos-inscritos-presenca");
-    let results = await collection.find({})
+    let results = await collection.find(query)
     // .limit(50)
     .toArray();
 
