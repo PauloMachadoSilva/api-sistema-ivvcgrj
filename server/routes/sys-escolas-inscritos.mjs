@@ -369,7 +369,7 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
         arr.push(ingresso)
         }
   }
-  console.log('arr', arr)
+//   console.log('arr', arr)
     if (!ingressos) res.send(error).status(404);
     else res.send(arr).status(200);
   });
