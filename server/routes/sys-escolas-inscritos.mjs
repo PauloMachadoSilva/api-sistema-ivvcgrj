@@ -398,6 +398,9 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
                   as: "INGRESSO",
                 },
               },
+              {
+                $sort:{'nome':1}
+              },
               { $match : { id_evento : id_evento, status_compra : '3' }},       
               
           ])
@@ -827,6 +830,78 @@ router.post("/:id", async (req, res) => {
       res.send(result).status(200);
     }
   });
+
+  router.get("/consultar-presenca-todos/:id", async (req, res) => {
+    let dados;
+    let arr = [];
+    let collection = await db.collection("usuarios");
+    let id_eventoReq = String(req.params.id);
+    let id_eventoOBJ = ObjectId(req.params.id);
+    let ingressos = {};
+    let usuarios = {};
+    // console.log(result.length > 0);
+    ingressos = await collection
+        .aggregate([
+          { $addFields: { id: { "$toString": "$_id" } } },
+        //   { $toObjectId: "$id_ingresso" } }
+            {
+                $lookup: {
+                  from: "sys-eventos-inscritos-presenca",
+                  let: {
+                    id_evento: id_eventoReq,
+                  },
+                  pipeline: [
+                    { $match: {
+                        $expr: { $and: [
+                            { $eq: [ "$id_evento", "$$id_evento" ] }
+                            // { $eq: [ "$status_compra", "3" ] }
+                        ] }
+                    } }
+                  ],
+                  localField: "id",
+                  foreignField: "id_usuario",
+                  as: "USUARIOS",
+                },
+            },
+            {
+                $lookup: {
+                    from: "sys-eventos-inscritos",
+                    let: {
+                      id_evento: id_eventoReq
+                    },
+                    pipeline: [
+                      { $match: {
+                          $expr: { $and: [
+                              { $eq: [ "$status_compra", "3" ] },
+                              { $eq: [ "$id_evento", "$$id_evento" ] }
+                          ] }
+                      } }
+                    ],
+                    localField: "id",
+                    foreignField: "id_usuario",
+                    as: "INSCRITOS",
+                  },
+            },
+            {
+              $sort:{'nome':1}
+            }
+        ])
+        .toArray();
+
+    let error = {};
+  //   ingressos = {usuarios};
+  for( const ingresso of ingressos) {
+    if (ingresso.INSCRITOS.length > 0) {
+        arr.push(ingresso)
+        }
+  }
+  console.log(arr);
+
+    if (!arr) res.send(error).status(404);
+    else res.send(arr).status(200);
+  });
+
+
 
 
 export default router;
