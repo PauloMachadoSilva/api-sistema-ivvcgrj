@@ -52,6 +52,78 @@ router.post("/", async (req, res) => {
   else res.send(ingressos).status(200);
 });
 
+router.post("/carteirinha/", async (req, res) => {
+    let dados;
+    let collection = await db.collection("sys-eventos");
+    // console.log(req);
+    // let query = { id_usuario: String(req.body.id_usuario), id_evento: req.body.id_evento };
+    // let result = await collection.find(query).toArray();
+    let id_usuario = String(req.body.id_usuario);
+    // let id_evento = String(req.body.id_evento);
+    let ingressos = {};
+    let usuarios = {};
+    // console.log(query);
+    // return;
+  
+    if (id_usuario != null) {
+      ingressos = await collection
+        .aggregate([
+          { $match : { tipo_sistema : 'sys-escolas'}},
+          { $addFields: { id3: { "$toString": "$_id" } } },
+          { $addFields: { id_usuarioField: { "$toObjectId": id_usuario } } },
+          { $addFields: { id1: id_usuario } },
+            {
+                $lookup: {
+                  from: "sys-eventos-inscritos",
+                  let: {
+                    id_usuario: '$id3',
+                  },
+                  pipeline: [
+                    { $match: {
+                        $expr: { $and: [
+                            { $eq: [ "$id_evento", "$$id_usuario" ] },
+                            { $eq: [ "$status_compra", "3" ] }
+                        ] }
+                    } }
+                  ],
+                  localField: "id1",
+                  foreignField: "id_usuario",
+                  as: "INSCRICAO",
+                },
+              },
+              {
+                $lookup: {
+                  from: "usuarios",
+                  localField: "id_usuarioField",
+                  foreignField: "_id",
+                  as: "USUARIO",
+                },
+              },
+            {
+              $sort:{'_id':1}
+            }
+        ])
+        .toArray();
+    }
+    let error = {};
+  //   ingressos = {usuarios};
+  let arr = [];
+  let arr2 = [];
+  
+  for( const ingresso of ingressos) {
+    arr.push(ingresso.INSCRICAO[0] ? ingresso.INSCRICAO[0]: null);
+    arr2.push(ingresso);
+    dados = {
+        EVENTOS: arr2,
+        USUARIO: ingresso.USUARIO,
+        INSCRICAO: arr,
+        id_inscricao : ingresso._id
+    }
+    }
+    if (!ingressos) res.send(error).status(404);
+    else res.send(dados).status(200);
+  });
+
 router.post("/todos/", async (req, res) => {
     let dados;
     let collection = await db.collection("sys-eventos-inscritos");
