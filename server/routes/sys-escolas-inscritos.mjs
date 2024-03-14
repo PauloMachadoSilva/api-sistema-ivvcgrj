@@ -56,17 +56,19 @@ router.post("/todos/", async (req, res) => {
     let dados;
     let collection = await db.collection("sys-eventos-inscritos");
     // console.log(req);
-    let query = { id_usuario: String(req.body.id_usuario) };
-    let result = await collection.find(query).toArray();
+    let query = { id_usuario: String(req.body.id_usuario), id_evento: req.body.id_evento };
+    // let result = await collection.find(query).toArray();
     let id_usuario = String(req.body.id_usuario);
+    let id_evento = String(req.body.id_evento);
     let ingressos = {};
     let usuarios = {};
-    // console.log(result.length > 0);
+    // console.log(query);
+    // return;
   
     if (id_usuario != null) {
       ingressos = await collection
         .aggregate([
-          { $match : { id_usuario : id_usuario }},
+          { $match : { id_usuario : id_usuario, id_evento: id_evento }},
           { $addFields: { id3: { "$toObjectId": "$id_evento" } } },
           { $addFields: { id_usuario: { "$toObjectId": id_usuario } } },
           { $addFields: { id1: id_usuario } },

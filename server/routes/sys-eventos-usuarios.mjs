@@ -4,6 +4,7 @@ import { Int32, ObjectId } from "mongodb";
 import logsFunction from '../logs/logs-functions.mjs'
 import logsLoginFunction from '../logs/logs.login-functions.mjs'
 import enviarEmailRecuperacaoSenha from "../emails/email-recuperacao-senha.mjs";
+import enviarEmailRecuperacaoSenhaEscolas from "../emails/email-recuperacao-senha-escolas.mjs";
 
 
 
@@ -139,6 +140,7 @@ router.post("/recuperar-senha/:email", async (req, res) => {
   let error = {}
   if (!result) res.send(error).status(404);
   else res.send(result).status(200);
+  // console.log(result);
 
   //ENVIAR EMAILS DE APROVAÇÃO
   let dadosEmail= {
@@ -151,6 +153,29 @@ router.post("/recuperar-senha/:email", async (req, res) => {
   
 
 });
+
+//Recuperar Senha
+router.post("/recuperar-senha-escolas/:email", async (req, res) => {
+  let collection = await db.collection("usuarios");
+  let query = {email: String(req.params.email)};
+  let result = await collection.findOne(query);
+  let error = {}
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+  console.log(result);
+
+  //ENVIAR EMAILS DE APROVAÇÃO
+  let dadosEmail= {
+    email: result.email,
+    subject: 'Recuperação de senha!',
+    texto: 'Ingressos'
+  }
+  
+  enviarEmailRecuperacaoSenhaEscolas(result,dadosEmail)
+  
+
+});
+
 
 
 // Não Implementado
