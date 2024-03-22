@@ -130,7 +130,7 @@ router.post("/todas-carteirinhas-escolas/", async (req, res) => {
   // console.log(req);
   // return;
   let query = { id_evento: req.body.id_evento, status_compra:'3' };
-  let result = await collection.find(query).toArray();
+  let result = await collection.find(query).sort({nome: 1}).toArray();
   
   if (!result) res.send(error).status(404);
   else res.send(result).status(200);
