@@ -1,6 +1,6 @@
 import express from "express";
 import db from "../db/conn.mjs";
-import enviarEmail from "../emails/index.mjs";
+import enviarEmail from "../emails/email-inscricao.mjs";
 import logsSysEventos from "../logs/logs-sys-eventos.mjs";
 
 
@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
     if (dadosUsuario.email && testeEmail === true) {
         let dadosEmail= {
             email: dadosUsuario.email,
-            subject: 'Compra aprovada!',
+            subject: 'Inscrição realizada!',
             texto: 'Ingressos'
         }
 
