@@ -73,7 +73,7 @@ router.post("/incluir-evento", async (req, res) => {
 router.get("/:id_evento", async (req, res) => {
   let id_evento = String(req.params.id_evento);
   let query = { _id: ObjectId(id_evento)};
-  let collection = await db.collection("sys-escolas");
+  let collection = await db.collection("sys-eventos");
   let results = await collection.find(query).sort().toArray();
   res.send(results).status(200);
 });

@@ -33,6 +33,7 @@ import sysEscolasCompraPix from "./routes/sys-escolas-compra-pix.mjs";
 import sysEscolasCompraCartao from "./routes/sys-escolas-compra-cartao.mjs";
 import sysEscolasNotificacoes from "./routes/sys-escolas-notificacoes.mjs";
 import sysEscolasInscritos from './routes/sys-escolas-inscritos.mjs';
+import sysEscolasMateriais from './routes/sys-escolas-materiais.mjs';
 
 
 import secoes from "./routes/secoes.mjs";
@@ -87,6 +88,7 @@ app.use("/sys-escolas-compra-pix", sysEscolasCompraPix);
 app.use("/sys-escolas-compra-cartao", sysEscolasCompraCartao);
 app.use("/sys-escolas-notificacoes", sysEscolasNotificacoes);
 app.use("/sys-escolas-inscritos", sysEscolasInscritos);
+app.use("/sys-escolas-materiais", sysEscolasMateriais);
 
 
 
