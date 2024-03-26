@@ -426,7 +426,8 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
                 { $match: {
                     $expr: { $and: [
                         { $eq: [ "$status_compra", "3" ] },
-                        { $eq: [ "$id_evento", "$$id_evento" ] }
+                        { $eq: [ "$id_evento", "$$id_evento" ] },
+                        { $not: {$eq: [ "$id_usuario", "64902dfef9002f08beb61b23" ]} }
                     ] }
                 } }
               ],
@@ -447,7 +448,7 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
               },
             }         
         ])
-        .toArray();
+        .sort({nome: 1}).toArray();
     let error = {};
 
   for( const ingresso of ingressos) {
@@ -487,7 +488,7 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
               {
                 $sort:{'nome':1}
               },
-              { $match : { id_evento : id_evento, status_compra : '3' }},       
+              { $match : { id_evento : id_evento, status_compra : '3', valor_compra_unitaria:{$not: {$eq: 0}} }},       
               
           ])
           .toArray();
@@ -497,6 +498,41 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
       if (!ingressos) res.send(error).status(404);
       else res.send(ingressos).status(200);
     });
+
+    router.get("/ingressos-todos-escola/ingressosid/:id_evento", async (req, res) => {
+      let id_evento = String(req.params.id_evento);
+        let collection = await db.collection("sys-eventos-inscritos");
+        let ingressos = {};  
+          ingressos = await collection
+            .aggregate([
+              { $addFields: { id: { "$toObjectId": "$id_usuario" } } },
+              { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
+              {
+                $lookup: {
+                  from: "usuarios",
+                  localField: "id",
+                  foreignField: "_id",
+                  as: "USUARIO",
+                },
+              },
+              {
+                  $lookup: {
+                    from: "sys-eventos-ingressos",
+                    localField: "id2",
+                    foreignField: "_id",
+                    as: "INGRESSO",
+                  },
+                },
+                { $match : { id_evento : id_evento, status_compra:{$not: {$eq: '0'},$not: {$eq: '2'}} }},       
+                
+            ])
+            .toArray();
+        let error = {};
+      //   ingressos = {usuarios};
+      //   console.log(ingressos);
+        if (!ingressos) res.send(error).status(404);
+        else res.send(ingressos).status(200);
+      });
 
   router.get("/ingressos-todos/ingressosid/:id_evento", async (req, res) => {
     let id_evento = String(req.params.id_evento);

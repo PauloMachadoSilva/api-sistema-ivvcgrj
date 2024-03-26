@@ -187,7 +187,7 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
                   as: "INGRESSO",
                 },
               },
-              { $match : { id_evento : id_evento }},       
+              { $match : { id_evento : id_evento, status_compra:{$not: {$eq: '0'},$not: {$eq: '2'}} }},       
               
           ])
           .toArray();
