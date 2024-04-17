@@ -52,6 +52,54 @@ router.post("/", async (req, res) => {
   else res.send(ingressos).status(200);
 });
 
+
+router.post("/todos-eventos-pendentes", async (req, res) => {
+  let collection = await db.collection("sys-eventos-inscritos");
+  let query = { id_usuario: String(req.body.id_usuario) };
+  let result = await collection.find(query).toArray();
+  let id_evento = String(req.body.id_evento);
+  let id_usuario = String(req.body.id_usuario);
+  let ingressos;
+  let usuarios = {};
+  // console.log(result.length > 0);
+  // console.log(id_usuario);
+  // return;
+
+  if (id_usuario != null) {
+    ingressos = await collection
+      .aggregate([
+        { $match : { id_usuario : id_usuario, id_evento: id_evento, status_compra: '2' } },
+        { $addFields: { id: { $toObjectId: id_usuario } } },
+        { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
+        {
+          $lookup: {
+            from: "usuarios",
+            localField: "id",
+            foreignField: "_id",
+            as: "USUARIO",
+          },
+        },
+        {
+            $lookup: {
+              from: "sys-eventos-ingressos",
+              localField: "id2",
+              foreignField: "_id",
+              as: "INGRESSO",
+            },
+          },
+          {
+            $sort:{'status_compra':1}
+          }
+      ])
+      .toArray();
+  }
+  let error = {};
+  // ingressos = {usuarios};
+  console.log(ingressos);
+  if (!ingressos) res.send(error).status(404);
+  else res.send(ingressos).status(200);
+});
+
 router.post("/carteirinha/", async (req, res) => {
   let dados;
   let collection = await db.collection("sys-eventos");
