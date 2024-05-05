@@ -38,6 +38,17 @@ router.post("/todos", async (req, res) => {
   else res.send(result).status(200);
 });
 
+ //Recuperar Ingressos
+ router.post("/todos-ingressos", async (req, res) => {
+  let collection = await db.collection("sys-eventos-ingressos");
+  // console.log(req);
+  let query = {id_evento: String(req.body.id_evento)};
+  let result = await collection.find(query).sort({ tipo:1, valor : 1, data: 1 }).toArray();
+  let error = {}
+  if (!result) res.send(error).status(404);
+  else res.send(result).status(200);
+});
+
 router.post("/id", async (req, res) => {
   let collection = await db.collection("sys-eventos-ingressos");
   // console.log(req);

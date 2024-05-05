@@ -216,7 +216,9 @@ router.post("/presencial", async (req, res) => {
 router.post("/atualizar/:id", async (req, res) => {
   const query = { _id: ObjectId(req.params.id) };
   const updates = {
-    $set: { 
+    $set: {
+      id_evento: req.body.id_evento, 
+      id_ingresso: req.body.id_ingresso, 
       nome: req.body.nome, 
       email: req.body.email, 
       telefone: req.body.telefone, 

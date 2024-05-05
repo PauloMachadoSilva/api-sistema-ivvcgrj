@@ -14,10 +14,11 @@ router.get("/", async (req, res) => {
 
 
 //Consulta um Evento
-router.get("/eventos-ativos", async (req, res) => {
-  let collection = await db.collection("sys-escolas");
-  let query = { ativo: true, exibir_home: true };
-  let results = await collection.find(query).sort({'data_inicial':1}).toArray();
+router.get("/escolas-ativas", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  let query = { ativo: true, exibir_home: true, tipo_sistema: 'sys-escolas' };
+  let results = await collection.find(query).sort({'data_inicial':-1}).toArray();
+  // console.log(results)
   res.send(results).status(200);
 });
 
