@@ -32,6 +32,14 @@ router.get("/eventos-ativos", async (req, res) => {
 });
 
 //Consulta um Evento
+router.get("/eventos-escolas-ativos", async (req, res) => {
+  let collection = await db.collection("sys-eventos");
+  let query = { ativo: true, exibir_home: true };
+  let results = await collection.find(query).sort({'tipo_sistema':-1, 'data_inicial':1}).toArray();
+  res.send(results).status(200);
+});
+
+//Consulta um Evento
 router.get("/escolas/eventos-ativos", async (req, res) => {
   let collection = await db.collection("sys-eventos");
   let query = { ativo: true, exibir_home: true, tipo_sistema: 'sys-escolas' };
