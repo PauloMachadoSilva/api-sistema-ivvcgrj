@@ -140,7 +140,7 @@ router.post("/", async (req, res) => {
   router.post("/privado-ingresso-adm", async (req, res) => {
     let collection = await db.collection("sys-eventos-ingressos-promocionais");
     let query = { _id: ObjectId(req.body.id_promocional) };
-    console.log(req.body.id_ingresso);
+    // console.log(req.body.id_ingresso);
 
     let eventos = {};
       eventos = await collection
@@ -190,6 +190,7 @@ router.post("/", async (req, res) => {
               "image":'$JOIN.image',
               "valor":'$valor',
               "discipulado":'$discipulado',
+              "modal":'$modal',
             }
         },
 
@@ -227,7 +228,8 @@ router.post("/atualizar/:id", async (req, res) => {
       setor: req.body.setor,
       ativo: req.body.ativo,
       validado: req.body.validado,
-      discipulado: req.body.discipulado
+      discipulado: req.body.discipulado,
+      modal: req.body.modal
     }
   } 
 
@@ -235,11 +237,76 @@ router.post("/atualizar/:id", async (req, res) => {
   // console.log(updates);
 
   let collection = await db.collection("sys-eventos-ingressos-promocionais");
+  
   let result = await collection.updateOne(query, updates);
+  const query2 = { _id: ObjectId(req.body.id_ingresso) };
+
+  const update = {
+    $set: {
+      link_externo: {
+        url: "privado",
+        ativo: true,
+        codigo:String(req.body.email).toLowerCase(),
+        texto: req.body.modal
+      }
+    }
+  } 
+  // console.log(update);
+  // return;
+
+  let collection2 = await db.collection("sys-eventos-ingressos");
+  let result2 = await collection2.updateOne(query2,update);
 
   res.send(result).status(200);
 });
 
+
+router.post("/incluir-ingresso-privado", async (req, res) => {
+  const ingresso = req.body.ingresso
+  const query = { _id: ObjectId(ingresso.id_ingresso) };
+
+  const include = {
+      id_evento: ingresso.id_evento, 
+      id_ingresso: ingresso.id_ingresso, 
+      nome: ingresso.nome, 
+      email: String(ingresso.email).toLowerCase(), 
+      telefone: ingresso.telefone, 
+      valor: ingresso.valor, 
+      limite: ingresso.limite,
+      setor: ingresso.setor,
+      ativo: ingresso.ativo,
+      validado: ingresso.validado,
+      discipulado: ingresso.discipulado,
+      modal: ingresso.modal
+  } 
+
+
+
+  //Inserir ingresso privado
+  
+  let collection = await db.collection("sys-eventos-ingressos-promocionais");
+  let result = await collection.insertOne(include);
+
+  // Atualizar ingresso
+
+  const update = {
+    $set: {
+      link_externo: {
+        url: "privado",
+        ativo: true,
+        codigo:String(ingresso.email).toLowerCase(),
+        texto: ingresso.modal
+      }
+    }
+  } 
+  // console.log(update);
+  // return;
+
+  let collection2 = await db.collection("sys-eventos-ingressos");
+  let result2 = await collection2.updateOne(query,update);
+
+  res.send(result2).status(200);
+});
 
 
 router.get("/ingressos-eventos", async (req, res) => {

@@ -167,7 +167,7 @@ router.post("/atualizar-ingressos/:id", async (req, res) => {
         valor: req.body.ingresso.valor,
         tipo: 3,
         limite: Number(req.body.ingresso.limite),
-        link_externo: req.body.ingresso.link_externo,
+        // link_externo: req.body.ingresso.link_externo,
         desconto_progressivo: req.body.ingresso.desconto_progressivo,
         ativo: req.body.ingresso.ativo,
         online: req.body.ingresso.online,
