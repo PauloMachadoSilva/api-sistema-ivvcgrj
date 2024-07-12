@@ -15,6 +15,7 @@ router.post("/", async (req, res) => {
     let dadosUsuario;
     let dadosInscricao;
     let dadosResponsaveis;
+    let dadosFuncionais;
     let dadosCompra;
     let result;
 
@@ -28,6 +29,10 @@ router.post("/", async (req, res) => {
 
     let responsaveis = params.forEach((ret) => {
         dadosResponsaveis = ret.dadosResponsaveis;
+      });
+
+      let funcionais = params.forEach((ret) => {
+        dadosFuncionais = ret.dadosFuncionais;
       });
 
     // let compra = params.forEach((ret)=>{
@@ -49,10 +54,15 @@ router.post("/", async (req, res) => {
     
     let collection = await db.collection("sys-eventos-inscritos");
     let dadosResp = dadosResponsaveis ? dadosResponsaveis : null
+    let dadosFunc = dadosFuncionais ? dadosFuncionais : null
     let asinscricoes = dadosInscricao.forEach(async (ret)=>{
         ret.status_compra = '3';
         if (dadosResp)
             ret.dados_responsaveis = dadosResp;
+
+        if (dadosFunc)
+          ret.dados_funcionais = dadosFunc;
+        
         result =  await collection.insertOne(ret);
         // console.log('usuario->',dadosUsuario);
         // let promo = await AtualizarIngressoPromocional(usuario);
