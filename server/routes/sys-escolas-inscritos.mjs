@@ -475,7 +475,8 @@ router.get("/ingressosid/:id_evento", async (req, res) => {
                     $expr: { $and: [
                         { $eq: [ "$status_compra", "3" ] },
                         { $eq: [ "$id_evento", "$$id_evento" ] },
-                        { $not: {$eq: [ "$id_usuario", "64902dfef9002f08beb61b23" ]} }
+                        { $not: {$eq: [ "$id_usuario", "64902dfef9002f08beb61b23" ]} },
+                        { $not: {$eq: [ "$forma_pagamento", "Gratuito"]} }
                     ] }
                 } }
               ],
