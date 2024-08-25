@@ -60,6 +60,7 @@ router.get("/", async (req, res) => {
     let ingressos = {};  
       ingressos = await collection
         .aggregate([ 
+          { $match : { ativo : 'true',} },
           { $addFields: { id2: { "$toString": "$_id" } } },
           {
             $lookup: {
@@ -71,7 +72,7 @@ router.get("/", async (req, res) => {
                 { $match: {
                     $expr: { $and: [
                         { $eq: [ "$id_evento", "$$id_evento" ] },
-                        { $eq: [ "$status_compra", "3" ] }
+                        { $eq: [ "$status_compra", "3" ] },
                     ] }
                 } }
               ],
