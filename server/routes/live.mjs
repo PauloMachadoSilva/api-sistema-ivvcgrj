@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 
 const router = express.Router();
 const TOKEN_TTL_SECONDS = 600;
+const LIVE_ACCESS_AFTER_END_HOURS = 72;
 const LIVE_TOKEN_SECRET = process.env.LIVE_TOKEN_SECRET || "ivvcgrj-live-token-local-secret";
 
 function base64Url(input) {
@@ -166,16 +167,17 @@ function getEventStatus(evento) {
   const now = new Date();
   const startAt = getDataEvento(evento?.data_inicial);
   const endAt = getDataEvento(evento?.data_final);
+  const accessUntil = endAt ? new Date(endAt.getTime() + LIVE_ACCESS_AFTER_END_HOURS * 60 * 60 * 1000) : null;
 
   if (startAt && now < startAt) {
     return { status: "not_started", start_at: startAt };
   }
 
-  if (endAt && now > endAt) {
-    return { status: "ended", end_at: endAt };
+  if (accessUntil && now > accessUntil) {
+    return { status: "ended", end_at: endAt, access_until: accessUntil };
   }
 
-  return { status: "active", start_at: startAt, end_at: endAt };
+  return { status: "active", start_at: startAt, end_at: endAt, access_until: accessUntil };
 }
 
 async function getLiveAccessData({ id_usuario, id_evento, id_ingresso }) {
