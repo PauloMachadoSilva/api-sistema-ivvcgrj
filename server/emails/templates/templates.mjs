@@ -12,14 +12,6 @@ const URL_EVENTOS_ONLINE = 'https://verbocampogranderj.com.br/eventos#/meus-ingr
 const IMG_LOGIN_LIVE = 'https://verbocampogranderj.com.br/assets/imgs/email/live-login.png';
 const IMG_MENU_LIVE = 'https://verbocampogranderj.com.br/assets/imgs/email/live-menu.png';
 
-function getLiveUrl(inscricao) {
-    const params = new URLSearchParams({ id_evento: String(inscricao.id_evento) });
-    if (inscricao.id_ingresso) {
-        params.set('id_ingresso', String(inscricao.id_ingresso));
-    }
-    return `https://verbocampogranderj.com.br/eventos#/live?${params.toString()}`;
-}
-
 function renderOrientacaoLive() {
     return `<div style='margin-top:28px;padding:18px;border:1px solid #d8e3f5;border-radius:8px;background:#f7fbff'>
                 <h3 style='margin-top:0'>Como acessar os eventos online</h3>
@@ -39,10 +31,9 @@ function renderOrientacaoLive() {
 }
 
 function conteudosOnline(dadosIngresso) {
-    const urlsLink = [];
     const urlsMaterial = [];
-    const linksOnline = [];
     const materiais = [];
+    let possuiLinkOnline = false;
 
     for (const inscricao of dadosIngresso) {
         const ingresso = inscricao.INGRESSO && inscricao.INGRESSO.length > 0 ? inscricao.INGRESSO[0] : null;
@@ -50,19 +41,11 @@ function conteudosOnline(dadosIngresso) {
         const material = ingresso && ingresso.material_online ? ingresso.material_online : null;
 
         if (linkOnline && linkOnline.url) {
-            const liveUrl = getLiveUrl(inscricao);
-            if (!urlsLink.includes(liveUrl)) {
-                urlsLink.push(liveUrl);
-                linksOnline.push(`<li><a href='${liveUrl}'>${linkOnline.texto ? linkOnline.texto : 'Acessar transmissão'}</a></li>`);
-            }
+            possuiLinkOnline = true;
         }
 
         if (material && material.url && material.tipo === 'link') {
-            const liveUrl = getLiveUrl(inscricao);
-            if (!urlsLink.includes(liveUrl)) {
-                urlsLink.push(liveUrl);
-                linksOnline.push(`<li><a href='${liveUrl}'>${material.texto ? material.texto : 'Acessar transmissão'}</a></li>`);
-            }
+            possuiLinkOnline = true;
         }
 
         if (material && material.url && material.tipo !== 'link' && !urlsMaterial.includes(material.url)) {
@@ -71,9 +54,8 @@ function conteudosOnline(dadosIngresso) {
         }
     }
 
-    return renderListaConteudo('Link online', 'Utilize o(s) link(s) abaixo para acessar o evento.', linksOnline)
-        + renderListaConteudo('Material online', 'Utilize o(s) link(s) abaixo para acessar o material do evento.', materiais)
-        + (linksOnline.length > 0 ? renderOrientacaoLive() : '');
+    return renderListaConteudo('Material online', 'Utilize o(s) link(s) abaixo para acessar o material do evento.', materiais)
+        + (possuiLinkOnline ? renderOrientacaoLive() : '');
 }
 
 export default function htmlTemplates (dadosIngresso, qrcodes) {
