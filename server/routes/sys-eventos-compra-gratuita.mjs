@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
     let collection = await db.collection("sys-eventos-inscritos");
     let dadosResp = dadosResponsaveis ? dadosResponsaveis : null
     let dadosFunc = dadosFuncionais ? dadosFuncionais : null
-    let asinscricoes = dadosInscricao.forEach(async (ret)=>{
+    for (const ret of dadosInscricao) {
         ret.status_compra = '3';
         if (dadosResp)
             ret.dados_responsaveis = dadosResp;
@@ -67,7 +67,7 @@ router.post("/", async (req, res) => {
         // console.log('usuario->',dadosUsuario);
         // let promo = await AtualizarIngressoPromocional(usuario);
 
-    })    
+    }
 
     let parse_email = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
     let testeEmail = parse_email.test(dadosUsuario.email);

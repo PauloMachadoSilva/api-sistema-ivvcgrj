@@ -171,6 +171,10 @@ router.post("/atualizar-ingressos/:id", async (req, res) => {
         desconto_progressivo: req.body.ingresso.desconto_progressivo,
         ativo: req.body.ingresso.ativo,
         online: req.body.ingresso.online,
+        tipo_online: req.body.ingresso.tipo_online,
+        link_online: req.body.ingresso.link_online,
+        material_online: req.body.ingresso.material_online,
+        campo_formulario: req.body.ingresso.campo_formulario,
     }
   }
   // console.log('query', query)

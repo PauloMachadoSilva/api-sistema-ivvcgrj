@@ -21,8 +21,27 @@ router.post("/", async (req, res) => {
     ingressos = await collection
       .aggregate([
         { $match : { id_usuario : id_usuario, id_evento: id_evento } },
-        { $addFields: { id: { $toObjectId: id_usuario } } },
-        { $addFields: { id2: { "$toObjectId": "$id_ingresso" } } },
+        {
+          $addFields: {
+            id: {
+              $convert: {
+                input: id_usuario,
+                to: "objectId",
+                onError: null,
+                onNull: null,
+              },
+            },
+            id2: {
+              $convert: {
+                input: "$id_ingresso",
+                to: "objectId",
+                onError: null,
+                onNull: null,
+              },
+            },
+          },
+        },
+        { $match: { id: { $ne: null }, id2: { $ne: null } } },
         {
           $lookup: {
             from: "usuarios",
@@ -438,7 +457,19 @@ router.post("/meus-eventos", async (req, res) => {
       eventos = await collection
         .aggregate([
           { $match : query },
-          { $addFields: { id: { "$toObjectId": "$id_evento" } } },
+          {
+            $addFields: {
+              id: {
+                $convert: {
+                  input: "$id_evento",
+                  to: "objectId",
+                  onError: null,
+                  onNull: null,
+                },
+              },
+            },
+          },
+          { $match: { id: { $ne: null } } },
           {
             $lookup: {
               from: "sys-eventos",
@@ -453,7 +484,7 @@ router.post("/meus-eventos", async (req, res) => {
           {$group : {_id:
             {
               "titulo":'$JOIN.titulo',
-              "_id":{ "$toObjectId": "$id_evento" },
+              "_id":"$id",
               "descricao":'$JOIN.descricao',
               "data_inicial":'$JOIN.data_inicial',
               "data_final":'$JOIN.data_final',

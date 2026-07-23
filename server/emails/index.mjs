@@ -33,7 +33,7 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
  
   dadosBanco = await recuperarDados(codigo_referencia);
   dadosQR = await qrcodeGerate(dadosBanco);
-  email(dadosEmail,dadosBanco,dadosQR);
+  await email(dadosEmail,dadosBanco,dadosQR);
   
   async function qrcodeGerate(data) {
     let ret = data
@@ -47,6 +47,15 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
 
   async function generateQrPromisse(dados) {
     let qrint=''
+      const ingresso = dados.INGRESSO && dados.INGRESSO.length > 0 ? dados.INGRESSO[0] : null;
+      const linkOnline = ingresso && ingresso.link_online ? ingresso.link_online : null;
+      const materialLegacyLink = ingresso && ingresso.material_online && ingresso.material_online.tipo === 'link' ? ingresso.material_online : null;
+      const ingressoOnline = ingresso && ingresso.tipo_online === 'online';
+
+      if (ingressoOnline && ((linkOnline && linkOnline.url) || (materialLegacyLink && materialLegacyLink.url))) {
+        return qrint;
+      }
+
       qr = await QRCode.toDataURL(`${String(dados._id)}`);
       qrcode = `
       <div style='border-bottom:2px dotted #00549c;padding:16px'>
@@ -89,7 +98,19 @@ export default async function enviarEmail(codigo_referencia, dadosEmail) {
           // { $match: { id_usuario: id_usuario } },
           { $match: { codigo_referencia: codigo_referencia } },
           // { $addFields: { id: { $toObjectId: id_usuario } } },
-          { $addFields: { id2: { $toObjectId: "$id_ingresso" } } },
+          {
+            $addFields: {
+              id2: {
+                $convert: {
+                  input: "$id_ingresso",
+                  to: "objectId",
+                  onError: null,
+                  onNull: null,
+                },
+              },
+            },
+          },
+          { $match: { id2: { $ne: null } } },
           // {
           //   $lookup: {
           //     from: "usuarios",

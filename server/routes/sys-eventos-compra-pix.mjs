@@ -254,7 +254,7 @@ async function IncluirCompra(dadosInscricao, dadosResponsaveis, status, code) {
   let collection = await db.collection("sys-eventos-inscritos");
   // console.log('dadosInscricao->',dadosInscricao);
   let dadosResp = dadosResponsaveis ? dadosResponsaveis : null
-  let asinscricoes = dadosInscricao.forEach(async (ret) => {
+  for (const ret of dadosInscricao) {
     // console.log('ret->>>',ret)
     ret.status_compra = status;
     ret.codigo_transacao = code;
@@ -262,7 +262,7 @@ async function IncluirCompra(dadosInscricao, dadosResponsaveis, status, code) {
       ret.dados_responsaveis = dadosResp;
 
     await collection.insertOne(ret);
-  });
+  }
 }
 
 async function AtualizarCompra(codigo, usuario) {
