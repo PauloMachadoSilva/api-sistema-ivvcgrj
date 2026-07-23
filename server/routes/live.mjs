@@ -81,6 +81,20 @@ function getLiveUrl(ingresso) {
   return "";
 }
 
+function getYoutubeEmbedUrlById(videoId) {
+  const params = new URLSearchParams({
+    autoplay: "1",
+    controls: "0",
+    disablekb: "1",
+    fs: "0",
+    modestbranding: "1",
+    playsinline: "1",
+    rel: "0",
+    iv_load_policy: "3",
+  });
+  return `https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
+}
+
 function getYoutubeEmbedUrl(url) {
   const value = String(url || "").trim();
   if (!value) {
@@ -96,7 +110,7 @@ function getYoutubeEmbedUrl(url) {
 
     if (hostname === "youtu.be") {
       const videoId = parsedUrl.pathname.split("/").filter(Boolean)[0];
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+      return videoId ? getYoutubeEmbedUrlById(videoId) : "";
     }
 
     if (hostname === "youtube.com" || hostname === "youtube-nocookie.com") {
@@ -106,7 +120,7 @@ function getYoutubeEmbedUrl(url) {
         || (pathParts[0] === "embed" ? pathParts[1] : "")
         || (pathParts[0] === "shorts" ? pathParts[1] : "");
 
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+      return videoId ? getYoutubeEmbedUrlById(videoId) : "";
     }
   } catch {
     // Mantem compatibilidade com URLs salvas sem protocolo.
@@ -123,11 +137,11 @@ function getYoutubeEmbedUrl(url) {
   for (const pattern of patterns) {
     const match = normalizedValue.match(pattern);
     if (match?.[1]) {
-      return `https://www.youtube.com/embed/${match[1]}`;
+      return getYoutubeEmbedUrlById(match[1]);
     }
   }
 
-  return normalizedValue.includes("youtube.com/embed/") ? normalizedValue : "";
+  return "";
 }
 
 function getLiveUrlPublico(idEvento, idIngresso) {
