@@ -84,9 +84,9 @@ function getLiveUrl(ingresso) {
 function getYoutubeEmbedUrlById(videoId) {
   const params = new URLSearchParams({
     autoplay: "1",
-    controls: "0",
+    controls: "1",
     disablekb: "1",
-    fs: "0",
+    fs: "1",
     modestbranding: "1",
     playsinline: "1",
     rel: "0",
