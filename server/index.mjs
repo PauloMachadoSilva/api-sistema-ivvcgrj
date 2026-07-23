@@ -8,6 +8,7 @@ import departamentosFuncoes from "./routes/departamentos-funcoes.mjs";
 import discipulados from "./routes/discipulados.mjs";
 import rhema from "./routes/rhema.mjs";
 import email from "./routes/email.mjs";
+import live from "./routes/live.mjs";
 import visitantes from "./routes/visitantes.mjs";
 import calendarioEventos from "./routes/calendarios-eventos.mjs";
 import eventos from "./routes/eventos.mjs";
@@ -97,6 +98,7 @@ app.use("/sys-escolas-compra-gratuita", sysEscolasComprasGratuitas);
 
 //Email
 app.use("/email", email);
+app.use("/live", live);
 
 
 // secoes

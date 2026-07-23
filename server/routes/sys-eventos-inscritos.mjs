@@ -12,7 +12,11 @@ router.post("/", async (req, res) => {
   let query = { id_usuario: String(req.body.id_usuario) };
   let result = await collection.find(query).toArray();
   let id_usuario = String(req.body.id_usuario);
-  let id_evento = String(req.body.id_evento);
+  let id_evento = req.body.id_evento ? String(req.body.id_evento) : "";
+  let matchIngressos = { id_usuario: id_usuario };
+  if (id_evento && id_evento !== "undefined" && id_evento !== "null") {
+    matchIngressos.id_evento = id_evento;
+  }
   let ingressos = {};
   let usuarios = {};
   // console.log(result.length > 0);
@@ -20,7 +24,7 @@ router.post("/", async (req, res) => {
   if (id_usuario != null) {
     ingressos = await collection
       .aggregate([
-        { $match : { id_usuario : id_usuario, id_evento: id_evento } },
+        { $match : matchIngressos },
         {
           $addFields: {
             id: {
@@ -58,6 +62,7 @@ router.post("/", async (req, res) => {
               as: "INGRESSO",
             },
           },
+          { $project: { "INGRESSO.link_online.url": 0 } },
       ])
       .toArray();
   }
