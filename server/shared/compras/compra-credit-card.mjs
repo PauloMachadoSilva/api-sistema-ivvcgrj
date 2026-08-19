@@ -1,5 +1,6 @@
 import json2xml from 'json2xml';
 import qs from 'qs'
+import { environment }  from "../../environments/environment.mjs";
 export class CompraCreditCardData {
   static CREDIT_CARD_HOM(dadosUsuario,token,referencia,dadosCartao) {
     
@@ -77,7 +78,7 @@ export class CompraCreditCardData {
     let card = {
         paymentMode:'default',
         paymentMethod:'credit_card',
-        receiverEmail:'juniorjosiasf@gmail.com',
+        receiverEmail: environment.pagSeguroProd.contaEmail,
         currency:'BRL',
         extraAmount:'0.00',
         itemId1:'0001',
