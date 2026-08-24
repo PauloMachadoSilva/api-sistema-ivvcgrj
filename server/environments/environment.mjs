@@ -25,7 +25,7 @@ export const environment = {
         // contaEmail: 'pauloems@yahoo.com.br',
         contaEmail: 'juniorjosiasf@gmail.com',
         // token: '0347E203BE8F4E019D3310CE5368DAC0',
-        token: 'bfe7c189-bb72-4e53-a078-6e830beab2af99e720be4e8d9397fa0c205be253812eb2c1-6054-4b24-a69b-8dd88978360e',
+        token: 'ef0b98c1-bedc-4836-9d82-e4c0f9a8446073294a4d4af281e319de52306740465673b4-2cfe-416a-b983-9705764b16a6',
         criarSecao: 'https://ws.pagseguro.uol.com.br/v2/sessions', //POST
         obterTokenCartao: 'https://df.uol.com.br/v2/cards', //POST
         obterBandeiraCartao: 'https://df.uol.com.br/df-fe/mvc/creditcard/v1/getBin', //GET
