@@ -2,7 +2,7 @@
     host: "smtp.gmail.com",
     port: 587,
     secure: false, // true for 465, false for other ports
-    user: 'sistemas.ivvcgrj@gmail.com', // generated ethereal user
-    pass: 'mkcm afgg teae vkul', // generated ethereal password
-    email: 'sistemas.ivvcgrj@gmail.com'
+    user: 'contato@verbocampogranderj.com.br', // generated ethereal user
+    pass: 'nunj bjys bcoj zgnq', // generated ethereal password
+    email: 'contato@verbocampogranderj.com.br'
  }
